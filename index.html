@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <!--CSS STYLES-->
         <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="node_modules/open-iconic/font/css/open-iconic-bootstrap.css">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
         <!--END CSS-->
         <title>Js & Python Translator</title>
@@ -19,34 +20,32 @@
             </div>
         </div>
         <div class="container-fluid">  
-            <div>
-                <div class="row">
-                    <div class="col">
-                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                          
-                            <div class="btn-group" role="group">
-                              <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                File
-                              </button>
-                              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                <a class="dropdown-item" href="#">New</a>
-                                <a class="dropdown-item" href="#">Save</a>
-                                <a class="dropdown-item" href="#">Save As </a>
-                              </div>
-                            </div>
-                            <button type="button" class="btn btn-primary">Add Tab</button>
-                            <button type="button" class="btn btn-success">Translate</button>
-                            
-                          </div>
-                    </div>
-                    <div class="col">
-                        <h4>asdfasdf</h4>
-                    </div>
-                </div>
+            <div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <!--Editor de Texto-->
+        <div class="controls">
+            <button class="btn btn-success"> File</button>
+            <button class="btn btn-danger" onclick="addTab()"><span class="oi oi-plus"></span> Add Tab</button>
+            <button class="btn btn-success"><span class="oi oi-play-circle"></span> Run</button>
+        </div>    
+        <div id="myTabPage">
+            
+            <ul class="nav nav-tabs nav-fill" id="tabPageBtns">
+                <li class="nav-item">
+                    <a class="nav-link active tabBtn" id="1" onclick="openEditorTab(event,'tab1')">Pestaña1</a>
+                </li>
+            </ul>
+
+            <div id="tab1" class="tabContent" style="display: block;" >
+                <textarea id="txtArea1"rows="20"></textarea>
             </div>
+        </div>
+        </div>   
+           
         </div>
         <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
 	    <script type="text/javascript" src="node_modules/popper.js/dist/umd/popper.min.js"></script>
-	    <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
     </body>
 </html>
