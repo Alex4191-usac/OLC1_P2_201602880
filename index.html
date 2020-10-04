@@ -24,7 +24,13 @@
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <!--Editor de Texto-->
         <div class="controls">
-            <button class="btn btn-success"> File</button>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">File</button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">New</a>
+                <a class="dropdown-item" href="#">Open</a>
+                <a class="dropdown-item" href="#">Save</a>
+                <a class="dropdown-item" href="#">Save As</a>
+              </div>
             <button class="btn btn-danger" onclick="addTab()"><span class="oi oi-plus"></span> Add Tab</button>
             <button class="btn btn-success"><span class="oi oi-play-circle"></span> Run</button>
         </div>    
