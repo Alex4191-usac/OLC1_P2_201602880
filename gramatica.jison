@@ -46,10 +46,11 @@
 "<="                %{return 'op_menor_igual';%}
 "=="                %{return 'op_igual_igual';%}
 "^"                 %{return 'op_xor';%}
-"+"                 %{return 'mas'; %}
-"-"                 %{return 'menos'; %}
-"*"                 %{return 'producto'; %}
-"/"                 %{return 'div'; %}
+"+"					%{return 'mas';%}
+"-"					%{return 'menos';%}
+"*"					%{return 'por';%}
+"/"					%{return 'dividido';%}
+
 
 /* --------------------------especiales--------------------------------------*/
 
@@ -57,8 +58,9 @@
 \n                  %{/*it will count */%}
 \s+                                 // se ignoran espacios en blanco
 "//".*                              // comentario simple línea
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] // comentario multiple líneas
 
-/* EXPRESIONES REGULARES*/
+/*---------------------- EXPRESIONES REGULARES-------------------------*/
 
 \"[^\"]*\"              %{ yytext = yytext.substr(1,yyleng-2); return 'CADENA'; %}
 [0-9]+("."[0-9]+)?\b    %{return 'decimal'; %}
@@ -73,8 +75,14 @@
 
 
 
-/*PARSER */
+/*----------------------------PARSER ----------------------------------------------*/
 
+
+/* Asociación de operadores y precedencia */
+
+%left 'mas' 'menos'
+%left 'por' 'dividido'
+%left Umenos
 
 %start INICIO
 
@@ -84,16 +92,61 @@ INICIO: INSTRUCCIONES EOF;
 
 INSTRUCCIONES: TIPO_INSTRUCCION INSTRUCCIONES
             |  TIPO_INSTRUCCION
-            |  error {console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column);}
+           
+;
+
+TIPO_INSTRUCCION: tk_public tk_class identificador llave_izq LISTA_SUBINSTRUCCION llave_der 
+                | tk_public tk_interface identificador llave_izq llave_der 
+                | error llave_der {console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column);}
 
 ;
 
-TIPO_INSTRUCCION: tk_public tk_class identificador llave_der llave_izq /*clase*/
-                | tk_public tk_interface identificador llave_der llave_izq /*interfaces*/ 
+
+LISTA_SUBINSTRUCCION: SUB_INSTRUCCION LISTA_SUBINSTRUCCION
+					| SUB_INSTRUCCION
 ;
 
+SUB_INSTRUCCION:  TIPO_DATO identificador LISTA_VARIABLES punto_coma %{console.log("TIPO:"+$1+ " identificador:"+$2);%}
+				| TIPO_DATO identificador LISTA_VARIABLES igual EXP_CADENA punto_coma %{console.log("TIPO:"+$1+ " identificador:"+$2 + " asignar "+$4);%}
+				| identificador LISTA_VARIABLES igual EXP_CADENA punto_coma
+                
+;
+LISTA_VARIABLES: coma identificador LISTA_VARIABLES %{console.log($1+ " identificador:"+$2);%}
+				| ;
 
 
+
+EXP_NUMERICA
+	: menos EXP_NUMERICA %prec Umenos				
+	| EXP_NUMERICA mas EXP_NUMERICA			
+	| EXP_NUMERICA menos EXP_NUMERICA		
+	| EXP_NUMERICA por EXP_NUMERICA			
+	| EXP_NUMERICA dividido EXP_NUMERICA	
+	| parentesis_izq parentesis_der PARDER					
+	| entero											
+	| decimal											
+	| identificador										
+;
+EXP_CADENA
+    : CADENA											
+	| EXP_NUMERICA							
+;
+
+EXP_RELACIONAL
+	: EXP_NUMERICA mayor EXP_NUMERICA		
+	| EXP_NUMERICA menor EXP_NUMERICA		
+	| EXP_NUMERICA op_mayor_igual EXP_NUMERICA	
+	| EXP_NUMERICA op_menor_igual EXP_NUMERICA	
+	| EXP_CADENA op_igual_igual EXP_CADENA			
+	| EXP_CADENA op_not_igual EXP_CADENA			
+;
+
+EXP_LOGICA
+	: EXP_RELACIONAL op_and EXP_RELACIONAL     
+	| EXP_RELACIONAL op_or EXP_RELACIONAL 		
+	| op_not EXP_RELACIONAL							
+	| EXP_RELACIONAL								
+;
 
 TIPO_DATO: tk_int
         | tk_double
@@ -102,22 +155,8 @@ TIPO_DATO: tk_int
         | tk_char
 ;
 
-/*SENTENCIAS DE REPETICION
-
-LISTA_SENTENCIA: SENTENCIAS LISTA_SENTENCIA
-        | SENTENCIA
-
-SENTENCIA: REPETICION
-        | CONTROL
-        | DECLARACION
-
-REPETICION: for parentesis_izq DECLARACION punto_comma EXPRESION punto_comma EXPRESION parentesis_izq llave_izq llave_der
-            |
-
-*/
-
-
 /*
+
 
 
 
