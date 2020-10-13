@@ -70,8 +70,8 @@
 
 /*---------------------- EXPRESIONES REGULARES-------------------------*/
 
-\"[^\"]*\"              %{ return 'CADENA'; %}
-"'"[^']"'"				%{ return 'Caracter'; %}
+\"[^\"]*\"              %{yytext = yytext.substr(1,yyleng-2); return 'CADENA'; %}
+"'"[^']"'"				%{yytext = yytext.substr(1,yyleng-2); return 'Caracter'; %}
 [0-9]+("."[0-9]+)?\b    %{return 'decimal'; %}
 [0-9]+\b                %{return 'entero'; %}
 ([a-zA-Z])[a-zA-Z0-9_]* %{return 'identificador'; %}
@@ -300,7 +300,7 @@ DECLARACION:    TIPO_DATO LISTA_VARIABLES punto_coma {$$ = new Nodo("DECLARACION
 																			$$.AgregarHijo($1);
 																			$$.AgregarHijo($2);
 																			$$.AgregarHijo(new Nodo("=","igual"));
-																			$$.AgregarHijo($3);
+																			$$.AgregarHijo($4);
 																			 $$.AgregarHijo(new Nodo(";","punto_coma"));}
 				| LISTA_VARIABLES igual EXP_NUMERICA punto_coma {$$ = new Nodo("DECLARACION");
 																 $$.AgregarHijo($1);
@@ -335,7 +335,7 @@ LISTA_VARIABLES: LISTA_VARIABLES coma identificador  {$$ = new Nodo("LISTA_VARIA
 													  $$.AgregarHijo(new Nodo(",","coma"));
 													  $$.AgregarHijo(new Nodo($3,"Id"));}
 				| identificador {$$ = new Nodo("LISTA_VARIABLES");
-				$$.AgregarHijo(new Nodo($1,"Id"));}
+						$$.AgregarHijo(new Nodo($1,"Id"));}
 ;
 
 

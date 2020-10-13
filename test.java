@@ -3,7 +3,18 @@
 public class Myclase { 
     
     String variable;
+    int variable = 10+10/5*3-50;
     
+
+    public void MyMetodo(){
+      String nombre="myMetodo";
+      int x , y;
+      x=10;
+      y=11;
+      int variable=3+3-5/5*10;
+      System.out.println("myMetodo");
+      System.out.print(x);
+  }
 
 }
 

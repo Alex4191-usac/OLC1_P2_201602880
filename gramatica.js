@@ -308,7 +308,7 @@ case 26:
 																			this.$.AgregarHijo($$[$0-4]);
 																			this.$.AgregarHijo($$[$0-3]);
 																			this.$.AgregarHijo(new Nodo("=","igual"));
-																			this.$.AgregarHijo($$[$0-2]);
+																			this.$.AgregarHijo($$[$0-1]);
 																			 this.$.AgregarHijo(new Nodo(";","punto_coma"));
 break;
 case 27:
@@ -351,7 +351,7 @@ this.$ = new Nodo("LISTA_VARIABLES");
 break;
 case 33:
 this.$ = new Nodo("LISTA_VARIABLES");
-				this.$.AgregarHijo(new Nodo($$[$0],"Id"));
+						this.$.AgregarHijo(new Nodo($$[$0],"Id"));
 break;
 case 34:
  this.$ = new Nodo("PARAMETROS_METODO_FUNCION");
@@ -1124,9 +1124,9 @@ case 51:/*it will count */
 break;
 case 52:// se ignoran espacios en blanco
 break;
-case 53: return 69; 
+case 53:yy_.yytext = yy_.yytext.substr(1,yy_.yyleng-2); return 69; 
 break;
-case 54: return 70; 
+case 54:yy_.yytext = yy_.yytext.substr(1,yy_.yyleng-2); return 70; 
 break;
 case 55:return 68; 
 break;
