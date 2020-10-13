@@ -2,10 +2,13 @@
 
 public class Myclase { 
     
-    String variable, variable1,variable2;
-    int constante=100/5*5/5+3+2-1*0+1;
+    String variable;
+    
 
-  
+}
+
+
+/*  
    public void MyMetodo(){
       String nombre="myMetodo";
       int x , y;
@@ -59,6 +62,4 @@ public void testif(String valor){
 
 }
 
- 
-
-
+  */

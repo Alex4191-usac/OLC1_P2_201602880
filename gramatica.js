@@ -84,130 +84,459 @@ performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* actio
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
- return $$[$0-1]; 
+ this.$=new Nodo("INICIO");
+							this.$.AgregarHijo($$[$0-1]);
+							console.log(this.$);
+							return this.$; 
 break;
-case 2: case 6: case 12: case 30: case 31: case 71:
- this.$ = `${$$[$0-1]}${$$[$0]}`; 
+case 2:
+this.$ = new Nodo("INSTRUCCIONES");
+											   this.$.AgregarHijo($$[$0-1]);
+												this.$.AgregarHijo($$[$0]); 
 break;
-case 3: case 7: case 13: case 70:
- this.$ = `${$$[$0]}`; 
+case 3:
+this.$ = new Nodo("INSTRUCCIONES");
+								 this.$.AgregarHijo($$[$0]); 
 break;
 case 4:
-this.$ = `${$$[$0-5]} ${$$[$0-4]} ${$$[$0-3]} ${$$[$0-2]} \n${$$[$0-1]} \n${$$[$0]}`;
+ this.$ = new Nodo("TIPO_INSTRUCCION");
+																							  this.$.AgregarHijo(new Nodo("public","tk_public"));
+																							  this.$.AgregarHijo(new Nodo("class","tk_class"));
+																							  this.$.AgregarHijo(new Nodo($$[$0-3],"Id"));
+																							  this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																							  this.$.AgregarHijo($$[$0-1]);
+																							  this.$.AgregarHijo(new Nodo("}","llave_der"));
 break;
 case 5:
-this.$ = `${$$[$0-5]} ${$$[$0-4]} ${$$[$0-3]} \n${$$[$0-2]} \n${$$[$0-1]} ${$$[$0]}`;
+this.$ = new Nodo("TIPO_INSTRUCCION");
+																								this.$.AgregarHijo(new Nodo("public","tk_public"));
+																								this.$.AgregarHijo(new Nodo("interface","tk_interface"));
+																								this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																							  	this.$.AgregarHijo($$[$0-1]);
+																							  	this.$.AgregarHijo(new Nodo("}","llave_der"));
+break;
+case 6:
+  this.$ = new Nodo("LISTA_METODO_FUNCION");
+															  this.$.AgregarHijo($$[$0-1]);
+															  this.$.AgregarHijo($$[$0]);
+break;
+case 7:
+this.$ = new Nodo("LISTA_METODO_FUNCION");
+									  this.$.AgregarHijo($$[$0]); 
 break;
 case 8:
-this.$ = `${$$[$0-8]} ${$$[$0-7]} ${$$[$0-6]} ${$$[$0-5]} ${$$[$0-4]} ${$$[$0-3]} ${$$[$0-2]} \n${$$[$0-1]} \n${$$[$0]}\n`;
+this.$ = new Nodo("METODO_FUNCION");
+																																					this.$.AgregarHijo(new Nodo("public","tk_public"));
+																																					this.$.AgregarHijo(new Nodo("void","tk_void"));	
+																																					this.$.AgregarHijo(new Nodo($$[$0-6],"Id"));	
+																																					this.$.AgregarHijo(new Nodo("(","par_izq"));
+																																					this.$.AgregarHijo($$[$0-4]);	
+																																					this.$.AgregarHijo(new Nodo(")","par_der"));
+																																					this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																																					this.$.AgregarHijo($$[$0-1]);
+																																					this.$.AgregarHijo(new Nodo("}","llave_der"));					
+																																													
 break;
 case 9:
-this.$ = `${$$[$0-11]} ${$$[$0-10]} ${$$[$0-9]} ${$$[$0-8]} ${$$[$0-7]} ${$$[$0-6]} ${$$[$0-5]} \n${$$[$0-4]} \n${$$[$0-3]} ${$$[$0-2]} ${$$[$0-1]} ${$$[$0]}\n`;
+this.$ = new Nodo("METODO_FUNCION");
+																																					this.$.AgregarHijo(new Nodo("public","tk_public"));
+																																					this.$.AgregarHijo($$[$0-10]);	
+																																					this.$.AgregarHijo(new Nodo($$[$0-9],"Id"));	
+																																					this.$.AgregarHijo(new Nodo("(","par_izq"));
+																																					this.$.AgregarHijo($$[$0-7]);	
+																																					this.$.AgregarHijo(new Nodo(")","par_der"));
+																																					this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																																					this.$.AgregarHijo($$[$0-4]);
+																																					this.$.AgregarHijo(new Nodo("return","tk_return"));
+																																					this.$.AgregarHijo($$[$0-2]);
+																																					this.$.AgregarHijo(new Nodo(";","punto_coma"));
+																																				    this.$.AgregarHijo(new Nodo("}","llave_der"));
+																																					
 break;
 case 10:
-this.$ = `${$$[$0-12]} ${$$[$0-11]} ${$$[$0-10]} ${$$[$0-9]} ${$$[$0-8]} ${$$[$0-7]} ${$$[$0-6]} ${$$[$0-5]} ${$$[$0-4]} ${$$[$0-3]} \n${$$[$0-2]} ${$$[$0-1]} \n${$$[$0]}`;
+this.$ = new Nodo("METODO_FUNCION");
+																																					this.$.AgregarHijo(new Nodo("public","tk_public"));
+																																					this.$.AgregarHijo(new Nodo("static","tk_static"));
+																																					this.$.AgregarHijo(new Nodo("void","tk_void"));	
+																																					this.$.AgregarHijo(new Nodo("main","tk_main"));
+																																					this.$.AgregarHijo(new Nodo("(","par_izq"));
+																																					this.$.AgregarHijo(new Nodo("String","tk_string"));
+																																					this.$.AgregarHijo(new Nodo("[","corchete_izq"));
+																																					this.$.AgregarHijo(new Nodo("]","corchete_der"));
+																																					this.$.AgregarHijo(new Nodo("args","tk_args"));
+																																					this.$.AgregarHijo(new Nodo(")","par_der"));
+																																					this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																																					this.$.AgregarHijo($$[$0-1]);
+																																					this.$.AgregarHijo(new Nodo("}","llave_der"));
 break;
 case 11:
- this.$= `${$$[$0]}`; 
+this.$ = new Nodo("METODO_FUNCION");
+							    this.$.AgregarHijo($$[$0]); 
 break;
-case 14:
-this.$=`${$$[$0]}\n`;
+case 12:
+ this.$ = new Nodo("LISTA_SUBINSTRUCCION");
+															  this.$.AgregarHijo($$[$0-1]);
+															  this.$.AgregarHijo($$[$0]);
 break;
-case 15: case 19:
-this.$=`${$$[$0]}`;
+case 13:
+this.$ = new Nodo("LISTA_SUBINSTRUCCION");
+									  this.$.AgregarHijo($$[$0]); 
+break;
+case 14: case 15: case 19:
+this.$ = new Nodo("LISTA_SUBINSTRUCCION");
+									 this.$.AgregarHijo($$[$0]);
 break;
 case 16:
-this.$ = `${$$[$0-11]} ${$$[$0-10]} ${$$[$0-9]} ${$$[$0-8]} ${$$[$0-7]} ${$$[$0-6]} ${$$[$0-5]} ${$$[$0-4]} ${$$[$0-3]} \n${$$[$0-2]} ${$$[$0-1]} \n${$$[$0]}`;
+this.$ = new Nodo("LISTA_SUBINSTRUCCION");
+																																													this.$.AgregarHijo(new Nodo("for","tk_for"));
+																																													this.$.AgregarHijo(new Nodo("(","par_izq"));
+																										 																			this.$.AgregarHijo($$[$0-9]);
+																																													this.$.AgregarHijo($$[$0-8]);
+																																													this.$.AgregarHijo(new Nodo(";","punto_coma"));
+																																													this.$.AgregarHijo(new Nodo($$[$0-6],"Id"));
+																																													this.$.AgregarHijo($$[$0-5]);
+																										 																			this.$.AgregarHijo(new Nodo(")","par_der"));
+																																													this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																																													this.$.AgregarHijo($$[$0-3]);
+																																													this.$.AgregarHijo($$[$0-2]);
+																																													this.$.AgregarHijo(new Nodo("}","llave_der"));
+
+
+
+				
 break;
 case 17:
-this.$ = `${$$[$0-7]} ${$$[$0-6]} ${$$[$0-5]} ${$$[$0-4]} ${$$[$0-3]} \n${$$[$0-2]} \n${$$[$0-1]} \n${$$[$0]}`;
+
+																												this.$ = new Nodo("LISTA_SUBINSTRUCCION");
+																												this.$.AgregarHijo(new Nodo("while","tk_whilet"));
+																												this.$.AgregarHijo(new Nodo("(","par_izq"));
+																										 		this.$.AgregarHijo($$[$0-5]);
+																										 		this.$.AgregarHijo(new Nodo(")","par_der"));
+																												this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																												this.$.AgregarHijo($$[$0-2]);
+																												this.$.AgregarHijo($$[$0-1]);
+																												this.$.AgregarHijo(new Nodo("}","llave_der"));
+				
 break;
 case 18:
-this.$ = `${$$[$0-9]} ${$$[$0-8]} \n${$$[$0-7]} \n${$$[$0-6]} ${$$[$0-5]} ${$$[$0-4]} ${$$[$0-3]} ${$$[$0-2]} ${$$[$0-1]} ${$$[$0]}`;
+this.$ = new Nodo("LISTA_SUBINSTRUCCION");
+																												this.$.AgregarHijo(new Nodo("do","tk_Do"));
+																												this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																												this.$.AgregarHijo($$[$0-7]);
+																												this.$.AgregarHijo($$[$0-6]);
+																												this.$.AgregarHijo(new Nodo("}","llave_der"));
+																												this.$.AgregarHijo(new Nodo("while","tk_whilet"));
+																												this.$.AgregarHijo(new Nodo("(","par_izq"));
+																										 		this.$.AgregarHijo($$[$0-2]);
+																										 		this.$.AgregarHijo(new Nodo(")","par_der"));
+																												this.$.AgregarHijo(new Nodo(";","punto_coma"));
 break;
 case 20:
- this.$ = `${$$[$0-8]}${$$[$0-7]}${$$[$0-6]}${$$[$0-5]}${$$[$0-4]}${$$[$0-3]}${$$[$0-2]}${$$[$0-1]}${$$[$0]}\n`; 
+this.$ = new Nodo("LISTA_SUBINSTRUCCION");
+																												this.$.AgregarHijo(new Nodo("System","tk_System"));
+																												this.$.AgregarHijo(new Nodo(".","tk_dot"));
+																												this.$.AgregarHijo(new Nodo("out","tk_out"));
+																												this.$.AgregarHijo(new Nodo(".","tk_dot"));
+																												this.$.AgregarHijo(new Nodo("println","tk_print"));
+																												this.$.AgregarHijo(new Nodo("(","par_izq"));
+																										 		this.$.AgregarHijo($$[$0-2]);
+																										 		this.$.AgregarHijo(new Nodo(")","par_der"));
+																												this.$.AgregarHijo(new Nodo(";","punto_coma")); 
 break;
 case 21:
- this.$ = `${$$[$0-8]}${$$[$0-7]}${$$[$0-6]}${$$[$0-5]}${$$[$0-4]}${$$[$0-3]}${$$[$0-2]} ${$$[$0-1]} ${$$[$0]}\n`; 
+this.$ = new Nodo("LISTA_SUBINSTRUCCION");
+																												this.$.AgregarHijo(new Nodo("System","tk_System"));
+																												this.$.AgregarHijo(new Nodo(".","tk_dot"));
+																												this.$.AgregarHijo(new Nodo("out","tk_out"));
+																												this.$.AgregarHijo(new Nodo(".","tk_dot"));
+																												this.$.AgregarHijo(new Nodo("print","tk_print"));
+																												this.$.AgregarHijo(new Nodo("(","par_izq"));
+																										 		this.$.AgregarHijo($$[$0-2]);
+																										 		this.$.AgregarHijo(new Nodo(")","par_der"));
+																												this.$.AgregarHijo(new Nodo(";","punto_coma"));
+																																				  
 break;
 case 22:
-this.$ = `${$$[$0-6]} ${$$[$0-5]} ${$$[$0-4]} ${$$[$0-3]} ${$$[$0-2]} ${$$[$0-1]} ${$$[$0]} `;
+this.$ = new Nodo("SENTENCIA_CONTROL");
+				  																					   this.$.AgregarHijo(new Nodo("if","tk_if"));
+																										 this.$.AgregarHijo(new Nodo("(","par_izq"));
+																										 this.$.AgregarHijo($$[$0-4]);
+																										 this.$.AgregarHijo(new Nodo(")","par_der"));
+																										 this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																										 this.$.AgregarHijo($$[$0-1]);
+																										 this.$.AgregarHijo(new Nodo("}","llave_der"));
+																										  
 break;
 case 23:
-this.$ = `${$$[$0-10]} ${$$[$0-9]} ${$$[$0-8]} ${$$[$0-7]} ${$$[$0-6]} \n${$$[$0-5]} ${$$[$0-4]} ${$$[$0-3]} ${$$[$0-2]} \n${$$[$0-1]} ${$$[$0]} `;
+this.$ = new Nodo("SENTENCIA_CONTROL");
+				  																					   												this.$.AgregarHijo(new Nodo("if","tk_if"));
+																										 											this.$.AgregarHijo(new Nodo("(","par_izq"));
+																										 											this.$.AgregarHijo($$[$0-8]);
+																																					this.$.AgregarHijo(new Nodo(")","par_der"));
+																																					this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																																					this.$.AgregarHijo($$[$0-5]);
+																																					this.$.AgregarHijo(new Nodo("}","llave_der"));
+																																					this.$.AgregarHijo(new Nodo("else","tk_else"));
+																																					this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																																					this.$.AgregarHijo($$[$0-1]);
+																																					this.$.AgregarHijo(new Nodo("}","llave_der"));
+
+																																				
 break;
 case 24:
-this.$ = `${$$[$0-8]} ${$$[$0-7]} ${$$[$0-6]} ${$$[$0-5]} ${$$[$0-4]} ${$$[$0-3]} ${$$[$0-2]} ${$$[$0-1]} ${$$[$0]}`;
+this.$ = new Nodo("SENTENCIA_CONTROL");
+				  																					   							this.$.AgregarHijo(new Nodo("if","tk_if"));
+																										 						this.$.AgregarHijo(new Nodo("(","par_izq"));
+																										 						this.$.AgregarHijo($$[$0-6]);
+																																this.$.AgregarHijo(new Nodo(")","par_der"));
+																																this.$.AgregarHijo(new Nodo("{","llave_izq"));
+																																this.$.AgregarHijo($$[$0-3]);
+																																this.$.AgregarHijo(new Nodo("}","llave_der"));
+																																this.$.AgregarHijo(new Nodo("else","tk_else"));
+																																this.$.AgregarHijo($$[$0]);
+					
+				
 break;
-case 25: case 32: case 34: case 38: case 43: case 45: case 46: case 51: case 52:
- this.$ = `${$$[$0-2]} ${$$[$0-1]} ${$$[$0]}`; 
+case 25:
+this.$ = new Nodo("DECLARACION");
+														this.$.AgregarHijo($$[$0-2]);
+														this.$.AgregarHijo($$[$0-1]);
+														this.$.AgregarHijo(new Nodo(";","punto_coma"));
 break;
 case 26:
- this.$ = `${$$[$0-4]} ${$$[$0-3]} ${$$[$0-2]}${$$[$0-1]}${$$[$0]}`; 
+ this.$ = new Nodo("DECLARACION");
+																			this.$.AgregarHijo($$[$0-4]);
+																			this.$.AgregarHijo($$[$0-3]);
+																			this.$.AgregarHijo(new Nodo("=","igual"));
+																			this.$.AgregarHijo($$[$0-2]);
+																			 this.$.AgregarHijo(new Nodo(";","punto_coma"));
 break;
 case 27:
- this.$ = `${$$[$0-3]} ${$$[$0-2]} ${$$[$0-1]}${$$[$0]}`; 
+this.$ = new Nodo("DECLARACION");
+																 this.$.AgregarHijo($$[$0-3]);
+																this.$.AgregarHijo(new Nodo("=","igual"));
+																this.$.AgregarHijo($$[$0-1]);
+																this.$.AgregarHijo(new Nodo(";","punto_coma"));
 break;
-case 28: case 29:
- this.$ = `${$$[$0-3]}${$$[$0-2]}${$$[$0-1]}${$$[$0]}`; 
+case 28:
+ 	  this.$ = new Nodo("DECLARACION");
+														  this.$.AgregarHijo(new Nodo($$[$0-1],"Id"));
+														  this.$.AgregarHijo(new Nodo("+","mas"));
+								   						  this.$.AgregarHijo(new Nodo("+","mas"));
+														  this.$.AgregarHijo(new Nodo(";","punto_coma"));
 break;
-case 35: case 40:
- this.$ = `${$$[$0-1]} ${$$[$0]}`; 
+case 29:
+  this.$ = new Nodo("DECLARACION");
+														  this.$.AgregarHijo(new Nodo($$[$0-1],"Id"));
+														  this.$.AgregarHijo(new Nodo("-","menos"));
+								   						  this.$.AgregarHijo(new Nodo("-","menos"));
+														  this.$.AgregarHijo(new Nodo(";","punto_coma"));
+															  
+break;
+case 30:
+ this.$ = new Nodo("DECLARACION_CONTADOR"); 
+							      this.$.AgregarHijo(new Nodo("+","mas"));
+								   this.$.AgregarHijo(new Nodo("+","mas")); 
+break;
+case 31:
+ this.$ = new Nodo("DECLARACION_CONTADOR");
+					 				this.$.AgregarHijo(new Nodo("-","menos"));
+					  				this.$.AgregarHijo(new Nodo("-","menos")); 
+break;
+case 32:
+this.$ = new Nodo("LISTA_VARIABLES");
+													  this.$.AgregarHijo($$[$0-2]);
+													  this.$.AgregarHijo(new Nodo(",","coma"));
+													  this.$.AgregarHijo(new Nodo($$[$0],"Id"));
+break;
+case 33:
+this.$ = new Nodo("LISTA_VARIABLES");
+				this.$.AgregarHijo(new Nodo($$[$0],"Id"));
+break;
+case 34:
+ this.$ = new Nodo("PARAMETROS_METODO_FUNCION");
+											      this.$.AgregarHijo($$[$0-2]);
+												  this.$.AgregarHijo(new Nodo($$[$0-2],"Id"));
+												  this.$.AgregarHijo($$[$0]); 
+break;
+case 35:
+this.$ = new Nodo("PARAMETROS_METODO_FUNCION");
+											      this.$.AgregarHijo($$[$0-1]);
+												  this.$.AgregarHijo(new Nodo($$[$0-1],"Id"));
 break;
 case 37:
- this.$ = `${$$[$0-3]} ${$$[$0-2]} ${$$[$0-1]} ${$$[$0]}`; 
+this.$ = new Nodo("L_PARAMETROS_METODO_FUNCION");
+																						this.$.AgregarHijo($$[$0-3]);
+																						this.$.AgregarHijo(new Nodo(",","coma"));
+																						this.$.AgregarHijo($$[$0-1]);
+																						this.$.AgregarHijo($$[$0]);
+																						this.$.AgregarHijo(new Nodo($$[$0-3],"Id")); 
+break;
+case 38:
+ this.$ = new Nodo("L_PARAMETROS_METODO_FUNCION");
+															this.$.AgregarHijo(new Nodo(",","comma"));
+															this.$.AgregarHijo($$[$0-1]); 
 break;
 case 39:
- this.$ = `${$$[$0-4]} ${$$[$0-3]} ${$$[$0-2]} ${$$[$0-1]} ${$$[$0]}\n`; 
+ 
+		this.$ = new Nodo("LLAMADA_METODO");
+		this.$.AgregarHijo(new Nodo($$[$0-4],"id"));
+		this.$.AgregarHijo(new Nodo("(","par_izq"));
+		this.$.AgregarHijo($$[$0-2]);
+		this.$.AgregarHijo(new Nodo(")","par_der"));
+		this.$.AgregarHijo(new Nodo(";","punto_coma"));
+ 
+break;
+case 40:
+ this.$= new Nodo("LLAMADA_PARAMETRO","");
+				 				 						  this.$.AgregarHijo($$[$0-1]);
+															this.$.AgregarHijo($$[$0]);  
+break;
+case 41:
+this.$= new Nodo("LLAMADA_PARAMETRO","");
+				 				 this.$.AgregarHijo($$[$0]);
+break;
+case 43:
+ this.$ = new Nodo("LISTA_LLAMADA_PARAMETRO","");
+																	  this.$.AgregarHijo($$[$0-2]);
+																	  this.$.AgregarHijo(new Nodo(",","comma"))
+																	  this.$.AgregarHijo($$[$0]);
+break;
+case 44:
+this.$ = new Nodo("LISTA_LLAMADA_PARAMETRO","");
+									 this.$.AgregarHijo(new Nodo(",","comma"));
+									 this.$.AgregarHijo($$[$0]);
+break;
+case 45:
+this.$ = new Nodo("EXP_LOGICA","");
+										 	  	this.$.AgregarHijo($$[$0-2]);
+											  	this.$.AgregarHijo(new Nodo("&&","op_and"));
+											  	this.$.AgregarHijo($$[$0]);  
+break;
+case 46:
+this.$ = new Nodo("EXP_LOGICA","");
+										 	  	this.$.AgregarHijo($$[$0-2]);
+											  	this.$.AgregarHijo(new Nodo("||","op_or"));
+											  	this.$.AgregarHijo($$[$0]);  
 break;
 case 47:
- this.$ = `${$$[$0-1]} ${$$[$0]} ${$$[$01]}`; 
+this.$ = new Nodo("EXP_LOGICA","");
+												 this.$.AgregarHijo(new Nodo("!","not"));
+												 this.$.AgregarHijo($$[$0]);  
 break;
-case 48: case 61: case 62: case 65:
- this.$ = $$[$0]; 
+case 48:
+ this.$ = new Nodo("EXP_LOGICA","");
+												this.$.AgregarHijo($$[$0]); 
 break;
 case 49:
- this.$ = `${$$[$0-2]} > ${$$[$0]}`; 
+ this.$ = new Nodo("EXP_RELACIONAL","");
+										 	  this.$.AgregarHijo($$[$0-2]);
+											  this.$.AgregarHijo(new Nodo(">","mayor"));
+											  this.$.AgregarHijo($$[$0]); 
 break;
 case 50:
- this.$ = `${$$[$0-2]} < ${$$[$0]}`; 
+ this.$ = new Nodo("EXP_RELACIONAL","");
+										 	  this.$.AgregarHijo($$[$0-2]);
+											  this.$.AgregarHijo(new Nodo("<","menor"));
+											  this.$.AgregarHijo($$[$0]); 
+break;
+case 51:
+ this.$ = new Nodo("EXP_RELACIONAL","");
+										 	  this.$.AgregarHijo($$[$0-2]);
+											  this.$.AgregarHijo(new Nodo(">=","mayor_igual"));
+											  this.$.AgregarHijo($$[$0]);  
+break;
+case 52:
+ this.$ = new Nodo("EXP_RELACIONAL","");
+										 	  this.$.AgregarHijo($$[$0-2]);
+											  this.$.AgregarHijo(new Nodo("<=","menor_igual"));
+											  this.$.AgregarHijo($$[$0]); 
 break;
 case 53:
- this.$ = `${$$[$0-2]} == ${$$[$0]}`; 
+ this.$ = new Nodo("EXP_RELACIONAL","");
+										 	  			  this.$.AgregarHijo($$[$0-2]);
+											  			  this.$.AgregarHijo(new Nodo("==","igual_igual"));
+											  			  this.$.AgregarHijo($$[$0]);  
 break;
 case 54:
- this.$ = `${$$[$0-2]} != ${$$[$0]}`; 
+ this.$ = new Nodo("EXP_RELACIONAL","");
+										 	  			  this.$.AgregarHijo($$[$0-2]);
+											  			  this.$.AgregarHijo(new Nodo("!=","not_igual"));
+											  			  this.$.AgregarHijo($$[$0]); 
 break;
-case 55: case 63: case 64:
-this.$=$$[$0];
+case 55:
+this.$ = new Nodo("EXP_RELACIONAL","");
+					this.$.AgregarHijo($$[$0]);
 break;
 case 56:
- this.$ = `${$$[$0-2]} + ${$$[$0]}`; 
+ this.$ = new Nodo("EXP_NUMERICA","");
+										 	this.$.AgregarHijo($$[$0-2]);
+											this.$.AgregarHijo(new Nodo("+","mas"));
+											this.$.AgregarHijo($$[$0]);
+										 
 break;
 case 57:
- this.$ = `${$$[$0-2]} - ${$$[$0]}`; 
+  this.$ = new Nodo("EXP_NUMERICA","");
+										 		this.$.AgregarHijo($$[$0-2]);
+												this.$.AgregarHijo(new Nodo("-","menos"));
+												this.$.AgregarHijo($$[$0]); 
 break;
 case 58:
- this.$ = `${$$[$0-2]} * ${$$[$0]}`; 
+  this.$ = new Nodo("EXP_NUMERICA","");
+										 		this.$.AgregarHijo($$[$0-2]);
+												this.$.AgregarHijo(new Nodo("*","por"));
+												this.$.AgregarHijo($$[$0]); 
 break;
 case 59:
- this.$ = `${$$[$0-2]} / ${$$[$0]}`; 
+  this.$ = new Nodo("EXP_NUMERICA","");
+										 		this.$.AgregarHijo($$[$0-2]);
+												this.$.AgregarHijo(new Nodo("+","mas"));
+												this.$.AgregarHijo($$[$0]); 
 break;
 case 60:
- this.$ = `(${$$[$0-1]})`; 
+ this.$ = new Nodo("EXP_NUMERICA","");
+													this.$.AgregarHijo(new Nodo("(","parentesis_izq"));
+													this.$.AgregarHijo($$[$0-1]);
+													this.$.AgregarHijo(new Nodo(")","parentesis_der"));
+												 
 break;
-case 66: case 68: case 69:
- this.$ =$$[$0]; 
+case 61:
+  this.$ = new Nodo("EXP_NUMERICA","");
+								   this.$.AgregarHijo(new Nodo($$[$0],"entero")); 
+break;
+case 62:
+ this.$ = new Nodo("EXP_NUMERICA","");
+								   this.$.AgregarHijo(new Nodo($$[$0],"decimal")) 
+break;
+case 63:
+ this.$ = new Nodo("EXP_NUMERICA","");
+								   this.$.AgregarHijo(new Nodo($$[$0],"cadena"))
+break;
+case 64:
+ this.$ = new Nodo("EXP_NUMERICA","");
+								   this.$.AgregarHijo(new Nodo($$[$0],"caracter"))
+break;
+case 65:
+ this.$ = new Nodo("EXP_NUMERICA","");
+								   this.$.AgregarHijo(new Nodo($$[$0],"id")); 
+break;
+case 66: case 68: case 69: case 70:
+ this.$ = new Nodo("TIPO_DATO","");
+					this.$.AgregarHijo(new Nodo($$[$0],"int")); 
 break;
 case 67:
- this.$ =$$[$0];
+ this.$ = new Nodo("TIPO_DATO","");
+					this.$.AgregarHijo(new Nodo($$[$0],"int"));
+break;
+case 71:
+ this.$ = new Nodo("SENTENCIA_BC","");
+									this.$.AgregarHijo($$[$0-1]);
+									this.$.AgregarHijo($$[$0]);  
 break;
 case 72:
- this.$ = `${$$[$0-1]}${$$[$0]}`;
-break;
-case 73:
-this.$=''
+ this.$ = new Nodo("SENTENCIA_BC","");
+									   this.$.AgregarHijo($$[$0-1]);
+									   this.$.AgregarHijo($$[$0]); 
 break;
 }
 },
@@ -359,6 +688,8 @@ parse: function parse(input) {
     }
     return true;
 }};
+
+	const Nodo = require('./AstTree');
 /* generated by jison-lex 0.3.4 */
 var lexer = (function(){
 var lexer = ({
