@@ -1,3 +1,4 @@
+
 class Token{
     constructor(fila,columna,lexema,tipo,correlativo){
         this.fila=fila;

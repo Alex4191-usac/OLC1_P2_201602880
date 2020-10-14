@@ -1,4 +1,4 @@
-var id_n=1;
+let id_n=1;
 class Recorrer_nodo{
     
     recorrer_arbol(nodo){

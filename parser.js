@@ -1,7 +1,8 @@
-var fs = require('fs');
+let fs = require('fs');
 const Nodo_Arbol = require('./AstTree.js');
-var parser = require('./gramatica.js');
-var tree_ast= require('./recorrer_nodo');
+let parser = require('./gramatica.js');
+let tree_ast= require('./recorrer_nodo');
+let parser2 = require('./Scanner');
 
 /*function ejecutar(texto){
     try{
@@ -13,6 +14,8 @@ var tree_ast= require('./recorrer_nodo');
 }*/
 
 fs.readFile('test.java', 'utf8',function(err,data){
-    var raiz = new tree_ast();
-    console.log(raiz.recorrer_arbol(parser.parse(data.toString())));
+    //let raiz = new tree_ast();
+    let scanlex = new parser2();
+    //console.log(raiz.recorrer_arbol(parser.parse(data.toString())));
+    scanlex.Scanner_Lex(data);
 });
