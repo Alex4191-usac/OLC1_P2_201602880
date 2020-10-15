@@ -13,6 +13,7 @@ class Scanner{
         let cadena;
         let Auxiliar_lex="";
         let Estado=0;
+        let multi_flag=false;
         data_text= data_text+"#"
         for (let i = 0; i < data_text.length-1; i++) {
             cadena=data_text.charAt(i);
@@ -211,7 +212,7 @@ class Scanner{
                         Auxiliar_lex+=cadena;
                         Estado=15;
                         columna++;
-                    }else if(AscciCode===46){// * comentario multiple
+                    }else if(AscciCode===42){// * comentario multiple
                         Auxiliar_lex+=cadena;
                         Estado=36;
                         columna++;
@@ -220,8 +221,9 @@ class Scanner{
                         Auxiliar_lex="";
                         i-=1;
                         Estado=0;
-                        break;  
+                          
                     }
+                    break;
                 case 15:
                     if(AscciCode===10){// /n
                         Auxiliar_lex+=cadena;
@@ -250,8 +252,9 @@ class Scanner{
                         Auxiliar_lex="";
                         i-=1;
                         Estado=0;
-                        break;  
+                          
                     }
+                    break;
                 case 18:
                     this.Token_Lista.push(new Token(fila,columna,Auxiliar_lex,"tk_menor_igual"));
                     Auxiliar_lex="";
@@ -426,11 +429,17 @@ class Scanner{
                     Estado=0;
                     break;
                 case 36:
-                    if(AscciCode===46){// *
+                    if(AscciCode===42){// *
+                        multi_flag=true;
+                        Auxiliar_lex+=cadena;
+                        Estado=36;
+                        columna++;
+                    }else if (AscciCode===47  && multi_flag===true) { //  /
                         Auxiliar_lex+=cadena;
                         Estado=37;
                         columna++;
                     }else{
+                        multi_flag=false;
                         if(AscciCode===10){
                             Auxiliar_lex+=cadena;
                             Estado=36;
@@ -445,17 +454,6 @@ class Scanner{
                     } 
                     break;
                 case 37:
-                    if (AscciCode===47) { //  /
-                        Auxiliar_lex+=cadena;
-                        Estado=38;
-                        columna++;
-                    } else {
-                        Auxiliar_lex+=cadena;
-                        Estado=36;
-                        columna++;
-                    }
-                    break;
-                case 38:
                     this.Token_Lista.push(new Token(fila,columna,Auxiliar_lex,"comentario multilinea"));
                     Auxiliar_lex="";
                     i-=1;
