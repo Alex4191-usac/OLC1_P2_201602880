@@ -143,7 +143,7 @@ METODO_FUNCION:   tk_public tk_void identificador parentesis_izq PARAMETROS_METO
 																																					$$.AgregarHijo($8);
 																																					$$.AgregarHijo(new Nodo("}","llave_der"));					
 																																													}
-				| tk_public TIPO_DATO identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der llave_izq LISTA_SUBINSTRUCCION tk_return EXP_NUMERICA punto_coma llave_der {$$ = new Nodo("METODO_FUNCION");
+				| tk_public TIPO_DATO identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der llave_izq LISTA_SUBINSTRUCCION SENTENCIA_RETURN  punto_coma llave_der {$$ = new Nodo("METODO_FUNCION");
 																																					$$.AgregarHijo(new Nodo("public","tk_public"));
 																																					$$.AgregarHijo($2);	
 																																					$$.AgregarHijo(new Nodo($3,"Id"));	
@@ -152,8 +152,8 @@ METODO_FUNCION:   tk_public tk_void identificador parentesis_izq PARAMETROS_METO
 																																					$$.AgregarHijo(new Nodo(")","par_der"));
 																																					$$.AgregarHijo(new Nodo("{","llave_izq"));
 																																					$$.AgregarHijo($8);
-																																					$$.AgregarHijo(new Nodo("return","tk_return"));
-																																					$$.AgregarHijo($10);
+																																					$$.AgregarHijo($9);
+																																					
 																																					$$.AgregarHijo(new Nodo(";","punto_coma"));
 																																				    $$.AgregarHijo(new Nodo("}","llave_der"));
 																																					}
@@ -491,6 +491,14 @@ SENTENCIA_BC: tk_break punto_coma { $$ = new Nodo("SENTENCIA_BC","");
 									   $$.AgregarHijo($1);
 									   $$.AgregarHijo($2); }
 			|
+
+;
+
+SENTENCIA_RETURN: tk_return EXP_NUMERICA { $$ = new Nodo("SENTENCIA_RETURN","");
+											$$.AgregarHijo(new Node("return","tk_return"));
+											$$.AgregarHijo($2);}
+				| tk_return {$$ = new Nodo("SENTENCIA_RETURN","");
+											$$.AgregarHijo(new Node("return","tk_return"));}
 
 ;
 
