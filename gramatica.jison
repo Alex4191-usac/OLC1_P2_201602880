@@ -52,11 +52,11 @@
 "||"                %{return 'op_or';%}
 "!="                %{return 'op_not_igual';%}
 "=="                %{return 'op_igual_igual';%}
-"^"                 %{return 'op_xor';%}
 "+"					%{return 'mas';%}
-"-"					%{return 'menos';%}
+"-"					%{return 'MENOS';%}
 "*"					%{return 'por';%}
 "/"					%{return 'dividido';%}
+"^"                 %{return 'op_xor';%}
 ">"                 %{return 'mayor';%}
 "<"                 %{return 'menor';%}
 "="                 %{return 'igual'; %}
@@ -89,9 +89,10 @@
 
 /* Asociación de operadores y precedencia */
 
-%left 'mas' 'menos'
+%left 'mas' 'MENOS'
 %left 'por' 'dividido'
-%left Umenos
+%left 'op_xor'
+%right 'UMENOS'
 
 %start INICIO
 
@@ -99,7 +100,7 @@
 
 INICIO: INSTRUCCIONES EOF  { $$=new Nodo("INICIO");
 							$$.AgregarHijo($1);
-							console.log($$);
+							
 							return $$; };
 
 INSTRUCCIONES: INSTRUCCIONES TIPO_INSTRUCCION {$$ = new Nodo("INSTRUCCIONES");
@@ -107,6 +108,7 @@ INSTRUCCIONES: INSTRUCCIONES TIPO_INSTRUCCION {$$ = new Nodo("INSTRUCCIONES");
 												$$.AgregarHijo($2); }
             |  TIPO_INSTRUCCION {$$ = new Nodo("INSTRUCCIONES");
 								 $$.AgregarHijo($1); }
+
            
 ;
 
@@ -117,13 +119,14 @@ TIPO_INSTRUCCION: tk_public tk_class identificador llave_izq LISTA_METODO_FUNCIO
 																							  $$.AgregarHijo(new Nodo("{","llave_izq"));
 																							  $$.AgregarHijo($5);
 																							  $$.AgregarHijo(new Nodo("}","llave_der"));}
-                | tk_public tk_interface identificador llave_izq LISTA_METODO_FUNCION llave_der {$$ = new Nodo("TIPO_INSTRUCCION");
+                | tk_public tk_interface identificador llave_izq SUB_INSTRUCCION_INTERFACE llave_der {$$ = new Nodo("TIPO_INSTRUCCION");
 																								$$.AgregarHijo(new Nodo("public","tk_public"));
 																								$$.AgregarHijo(new Nodo("interface","tk_interface"));
 																								$$.AgregarHijo(new Nodo("{","llave_izq"));
 																							  	$$.AgregarHijo($5);
 																							  	$$.AgregarHijo(new Nodo("}","llave_der"));}
-;
+				| error llave_der	{ console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
+;				
 
 LISTA_METODO_FUNCION: LISTA_METODO_FUNCION METODO_FUNCION  {  $$ = new Nodo("LISTA_METODO_FUNCION");
 															  $$.AgregarHijo($1);
@@ -143,7 +146,7 @@ METODO_FUNCION:   tk_public tk_void identificador parentesis_izq PARAMETROS_METO
 																																					$$.AgregarHijo($8);
 																																					$$.AgregarHijo(new Nodo("}","llave_der"));					
 																																													}
-				| tk_public TIPO_DATO identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der llave_izq LISTA_SUBINSTRUCCION SENTENCIA_RETURN  punto_coma llave_der {$$ = new Nodo("METODO_FUNCION");
+				| tk_public TIPO_DATO identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der llave_izq LISTA_SUBINSTRUCCION SENTENCIA_RETURN punto_coma llave_der {$$ = new Nodo("METODO_FUNCION");
 																																					$$.AgregarHijo(new Nodo("public","tk_public"));
 																																					$$.AgregarHijo($2);	
 																																					$$.AgregarHijo(new Nodo($3,"Id"));	
@@ -153,7 +156,6 @@ METODO_FUNCION:   tk_public tk_void identificador parentesis_izq PARAMETROS_METO
 																																					$$.AgregarHijo(new Nodo("{","llave_izq"));
 																																					$$.AgregarHijo($8);
 																																					$$.AgregarHijo($9);
-																																					
 																																					$$.AgregarHijo(new Nodo(";","punto_coma"));
 																																				    $$.AgregarHijo(new Nodo("}","llave_der"));
 																																					}
@@ -176,11 +178,22 @@ METODO_FUNCION:   tk_public tk_void identificador parentesis_izq PARAMETROS_METO
 							    $$.AgregarHijo($1); }
 ;
 
+
+
+SUB_INSTRUCCION_INTERFACE:  SUB_INSTRUCCION_INTERFACE LLAMADA_METODO {$$ = new Nodo("SUB_INSTRUCCION_INTERFACE");
+														                      $$.AgregarHijo($1);
+																			   $$.AgregarHijo($2);	}
+						 | LLAMADA_METODO {$$ = new Nodo("SUB_INSTRUCCION_INTERFACE");
+										  $$.AgregarHijo($1);}
+;
+
+
+
 LISTA_SUBINSTRUCCION: LISTA_SUBINSTRUCCION SUB_INSTRUCCION  { $$ = new Nodo("LISTA_SUBINSTRUCCION");
 															  $$.AgregarHijo($1);
 															  $$.AgregarHijo($2);}
 					| SUB_INSTRUCCION {$$ = new Nodo("LISTA_SUBINSTRUCCION");
-									  $$.AgregarHijo($1); }
+									       $$.AgregarHijo($1); }
 ;
 
 SUB_INSTRUCCION: 
@@ -229,7 +242,13 @@ SUB_INSTRUCCION:
 																												$$.AgregarHijo(new Nodo(";","punto_coma"));}
 				| SENTENCIA_CONTROL {$$ = new Nodo("LISTA_SUBINSTRUCCION");
 									 $$.AgregarHijo($1);}
-				| tk_System punto tk_out punto tk_println parentesis_izq EXP_NUMERICA parentesis_der punto_coma {$$ = new Nodo("LISTA_SUBINSTRUCCION");
+				| SENTENCIA_IMPRIMIR{$$= new Nodo("LISTA_SUBINSTRUCCION");
+									$$.AgregarHijo($1);}
+				
+
+;
+SENTENCIA_IMPRIMIR:
+				tk_System punto tk_out punto tk_println parentesis_izq EXP_NUMERICA parentesis_der punto_coma {$$ = new Nodo("SENTENCIA_IMPRIMIR");
 																												$$.AgregarHijo(new Nodo("System","tk_System"));
 																												$$.AgregarHijo(new Nodo(".","tk_dot"));
 																												$$.AgregarHijo(new Nodo("out","tk_out"));
@@ -239,7 +258,7 @@ SUB_INSTRUCCION:
 																										 		$$.AgregarHijo($7);
 																										 		$$.AgregarHijo(new Nodo(")","par_der"));
 																												$$.AgregarHijo(new Nodo(";","punto_coma")); }
-				| tk_System punto tk_out punto tk_print parentesis_izq EXP_NUMERICA parentesis_der punto_coma {$$ = new Nodo("LISTA_SUBINSTRUCCION");
+				| tk_System punto tk_out punto tk_print parentesis_izq EXP_NUMERICA parentesis_der punto_coma {$$ = new Nodo("SENTENCIA_IMPRIMIR");
 																												$$.AgregarHijo(new Nodo("System","tk_System"));
 																												$$.AgregarHijo(new Nodo(".","tk_dot"));
 																												$$.AgregarHijo(new Nodo("out","tk_out"));
@@ -249,7 +268,7 @@ SUB_INSTRUCCION:
 																										 		$$.AgregarHijo($7);
 																										 		$$.AgregarHijo(new Nodo(")","par_der"));
 																												$$.AgregarHijo(new Nodo(";","punto_coma"));
-																																				  }
+																																							}
 ;
 
 SENTENCIA_CONTROL:
@@ -288,7 +307,7 @@ SENTENCIA_CONTROL:
 																																$$.AgregarHijo($9);
 					
 				}
-;
+				;
 
 
 
@@ -312,19 +331,20 @@ DECLARACION:    TIPO_DATO LISTA_VARIABLES punto_coma {$$ = new Nodo("DECLARACION
 														  $$.AgregarHijo(new Nodo("+","mas"));
 								   						  $$.AgregarHijo(new Nodo("+","mas"));
 														  $$.AgregarHijo(new Nodo(";","punto_coma"));}
-				| identificador menos menos punto_coma {  $$ = new Nodo("DECLARACION");
+				| identificador MENOS MENOS punto_coma {  $$ = new Nodo("DECLARACION");
 														  $$.AgregarHijo(new Nodo($3,"Id"));
 														  $$.AgregarHijo(new Nodo("-","menos"));
 								   						  $$.AgregarHijo(new Nodo("-","menos"));
 														  $$.AgregarHijo(new Nodo(";","punto_coma"));
 															  }
 				
+				
 ;
 
 DECLARACION_CONTADOR:  mas mas { $$ = new Nodo("DECLARACION_CONTADOR"); 
 							      $$.AgregarHijo(new Nodo("+","mas"));
 								   $$.AgregarHijo(new Nodo("+","mas")); }
-					|  menos menos { $$ = new Nodo("DECLARACION_CONTADOR");
+					|  MENOS MENOS { $$ = new Nodo("DECLARACION_CONTADOR");
 					 				$$.AgregarHijo(new Nodo("-","menos"));
 					  				$$.AgregarHijo(new Nodo("-","menos")); }
 
@@ -341,22 +361,22 @@ LISTA_VARIABLES: LISTA_VARIABLES coma identificador  {$$ = new Nodo("LISTA_VARIA
 
 PARAMETROS_METODO_FUNCION: TIPO_DATO identificador L_PARAMETROS_METODO_FUNCION { $$ = new Nodo("PARAMETROS_METODO_FUNCION");
 											      $$.AgregarHijo($1);
-												  $$.AgregarHijo(new Nodo($1,"Id"));
+												  $$.AgregarHijo(new Nodo($2,"Id"));
 												  $$.AgregarHijo($3); }
 						| TIPO_DATO identificador {$$ = new Nodo("PARAMETROS_METODO_FUNCION");
 											      $$.AgregarHijo($1);
-												  $$.AgregarHijo(new Nodo($1,"Id"));}
+												  $$.AgregarHijo(new Nodo($2,"Id"));}
 						| ; 
 
 L_PARAMETROS_METODO_FUNCION: L_PARAMETROS_METODO_FUNCION coma TIPO_DATO identificador  {$$ = new Nodo("L_PARAMETROS_METODO_FUNCION");
 																						$$.AgregarHijo($1);
 																						$$.AgregarHijo(new Nodo(",","coma"));
 																						$$.AgregarHijo($3);
-																						$$.AgregarHijo($4);
-																						$$.AgregarHijo(new Nodo($1,"Id")); }
+																						$$.AgregarHijo(new Nodo($4,"Id")); }
 						   | coma TIPO_DATO identificador  { $$ = new Nodo("L_PARAMETROS_METODO_FUNCION");
 															$$.AgregarHijo(new Nodo(",","comma"));
-															$$.AgregarHijo($2); } ;
+															$$.AgregarHijo($2);
+															$$.AgregarHijo(new Nodo($4,"Id")); } ;
 
 
 
@@ -367,8 +387,11 @@ LLAMADA_METODO: identificador parentesis_izq LLAMADA_PARAMETRO parentesis_der pu
 		$$.AgregarHijo(new Nodo("(","par_izq"));
 		$$.AgregarHijo($3);
 		$$.AgregarHijo(new Nodo(")","par_der"));
-		$$.AgregarHijo(new Nodo(";","punto_coma"));
- }
+		$$.AgregarHijo(new Nodo(";","punto_coma"));}
+		| error punto_coma { console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
+
+	
+ 
 ;
 
 LLAMADA_PARAMETRO: EXP_NUMERICA LISTA_LLAMADA_PARAMETRO { $$= new Nodo("LLAMADA_PARAMETRO","");
@@ -434,13 +457,13 @@ EXP_RELACIONAL
 ;
 
 EXP_NUMERICA
-				
+	
 	: EXP_NUMERICA mas EXP_NUMERICA		{ $$ = new Nodo("EXP_NUMERICA","");
 										 	$$.AgregarHijo($1);
 											$$.AgregarHijo(new Nodo("+","mas"));
 											$$.AgregarHijo($3);
 										 }	
-	| EXP_NUMERICA menos EXP_NUMERICA		{  $$ = new Nodo("EXP_NUMERICA","");
+	| EXP_NUMERICA MENOS EXP_NUMERICA		{  $$ = new Nodo("EXP_NUMERICA","");
 										 		$$.AgregarHijo($1);
 												$$.AgregarHijo(new Nodo("-","menos"));
 												$$.AgregarHijo($3); }
@@ -451,8 +474,18 @@ EXP_NUMERICA
 
 	| EXP_NUMERICA dividido EXP_NUMERICA	{  $$ = new Nodo("EXP_NUMERICA","");
 										 		$$.AgregarHijo($1);
-												$$.AgregarHijo(new Nodo("+","mas"));
+												$$.AgregarHijo(new Nodo("/","dividido"));
 												$$.AgregarHijo($3); }
+	| MENOS EXP_NUMERICA %prec UMENOS { $$ = new Nodo("EXP_NUMERICA","");
+											$$.AgregarHijo(new Nodo("-","menos"));
+											$$.AgregarHijo($2);
+											
+										 }	
+			
+	| EXP_NUMERICA op_xor EXP_NUMERICA	{$$ = new Nodo("EXP_NUMERICA","");
+										 		$$.AgregarHijo($1);
+												$$.AgregarHijo(new Nodo("^","XOR"));
+												$$.AgregarHijo($3);}
 	| parentesis_izq EXP_NUMERICA parentesis_der { $$ = new Nodo("EXP_NUMERICA","");
 													$$.AgregarHijo(new Nodo("(","parentesis_izq"));
 													$$.AgregarHijo($2);
@@ -475,14 +508,24 @@ EXP_NUMERICA
 TIPO_DATO: tk_int { $$ = new Nodo("TIPO_DATO","");
 					$$.AgregarHijo(new Nodo($1,"int")); }
         | tk_double { $$ = new Nodo("TIPO_DATO","");
-					$$.AgregarHijo(new Nodo($1,"int"));}
+					$$.AgregarHijo(new Nodo($1,"double"));}
         | tk_String { $$ = new Nodo("TIPO_DATO","");
-					$$.AgregarHijo(new Nodo($1,"int")); }
+					$$.AgregarHijo(new Nodo($1,"String")); }
         | tk_boolean { $$ = new Nodo("TIPO_DATO","");
-					$$.AgregarHijo(new Nodo($1,"int")); }
+					$$.AgregarHijo(new Nodo($1,"boolean")); }
         | tk_char { $$ = new Nodo("TIPO_DATO","");
-					$$.AgregarHijo(new Nodo($1,"int")); }
+					$$.AgregarHijo(new Nodo($1,"char")); }
 ;
+
+
+SENTENCIA_RETURN: tk_return EXP_NUMERICA { $$ = new Nodo("SENTENCIA_RETURN","");
+											$$.AgregarHijo(new Nodo("return","tk_return"));
+											$$.AgregarHijo($2);}
+				| tk_return {$$ = new Nodo("SENTENCIA_RETURN","");
+											$$.AgregarHijo(new Nodo("return","tk_return"));}
+
+;
+
 
 SENTENCIA_BC: tk_break punto_coma { $$ = new Nodo("SENTENCIA_BC","");
 									$$.AgregarHijo($1);
@@ -490,16 +533,8 @@ SENTENCIA_BC: tk_break punto_coma { $$ = new Nodo("SENTENCIA_BC","");
 			| tk_continue punto_coma { $$ = new Nodo("SENTENCIA_BC","");
 									   $$.AgregarHijo($1);
 									   $$.AgregarHijo($2); }
-			|
+			|;
 
-;
 
-SENTENCIA_RETURN: tk_return EXP_NUMERICA { $$ = new Nodo("SENTENCIA_RETURN","");
-											$$.AgregarHijo(new Node("return","tk_return"));
-											$$.AgregarHijo($2);}
-				| tk_return {$$ = new Nodo("SENTENCIA_RETURN","");
-											$$.AgregarHijo(new Node("return","tk_return"));}
-
-;
 
 

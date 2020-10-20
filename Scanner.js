@@ -18,6 +18,7 @@ class Scanner{
         for (let i = 0; i < data_text.length-1; i++) {
             cadena=data_text.charAt(i);
             AscciCode=cadena.charCodeAt(0);
+            //console.log(AscciCode);
             switch (Estado) {
                 case 0:
                     if (AscciCode===59) {//;
@@ -90,7 +91,7 @@ class Scanner{
                         columna++;
                     }else if(AscciCode===124){// |
                         Auxiliar_lex+=cadena;
-                        Estado=21;
+                        Estado=24;
                         columna++;
                     }else if(AscciCode===61){// =
                         Auxiliar_lex+=cadena;
@@ -309,11 +310,15 @@ class Scanner{
                     } 
                     break;
                 case 24:
-                    this.Token_Lista.push(new Token(fila,columna,Auxiliar_lex,"tk_or"));
-                    Auxiliar_lex="";
-                    i-=1;
-                    Estado=0;
-                    break;
+
+                    if(AscciCode===124){// |
+                        Auxiliar_lex+=cadena;
+                        Estado=38;
+                        columna++;
+                    }else{
+
+                    }
+                   break;
                 case 25:
                     if (AscciCode==61) {// =
                         Auxiliar_lex+=cadena;
@@ -360,7 +365,7 @@ class Scanner{
                         Estado=29;
                         columna++;
                     }else{
-                        this.Token_Lista.push(new Token(fila,columna,Auxiliar_lex,"identificador"));
+                        this.Token_Lista.push(new Token(fila,columna,Auxiliar_lex,this.Check_Reservada(Auxiliar_lex)));
                         Auxiliar_lex="";
                         i-=1;
                         Estado=0; 
@@ -459,10 +464,18 @@ class Scanner{
                     i-=1;
                     Estado=0;
                     break;
+                case 38:
+                    this.Token_Lista.push(new Token(fila,columna,Auxiliar_lex,"tk_or"));
+                    Auxiliar_lex="";
+                    i-=1;
+                    Estado=0;
+                    break;
                 default:
                     break;
             }
+            
         }
+        this.Token_Lista.push(new Token(fila,columna,"#","ULTIMO"));
         this.imprimir_Token(this.Token_Lista)
     }
 
@@ -472,6 +485,88 @@ class Scanner{
             temp = Token_Lista[index];
             console.log("Token "+temp.lexema+ "-->"+ "Tipo: "+ temp.tipo);
             
+        }
+
+    }
+
+    Check_Reservada(tipo){
+        let temp_tipo = tipo.toLowerCase();
+        switch (temp_tipo) {
+            case "public":
+                return "tk_public";
+                break;
+            case "static":
+                return "tk_static";
+                break;
+            case "class":
+                return "tk_class";
+                break;
+            case "interface":
+                return "tk_interface";
+                break;
+            case "void":
+                return "tk_void";
+                break;
+            case "main":
+                return "tk_main";
+                break;
+            case "args":
+                return "tk_args";
+                break;
+            case "system":
+                return "tk_System";
+                break;
+            case "out":
+                return "tk_out";
+                break;
+            case "print":
+                return "tk_print";
+                break;
+            case "println":
+                return "tk_println";
+                break;
+            case "int":
+                return "tk_int";
+                break;
+            case "double":
+                return "tk_double";
+                break;
+            case "char":
+                return "tk_char";
+                break;
+            case "boolean":
+                return "tk_boolean";
+                break;
+            case "string":
+                return "tk_string";
+                break;
+            case "for":
+                return "tk_for";
+                break;
+            case "while":
+                return "tk_while";
+                break;
+            case "do":
+                return "tk_do";
+                break;
+            case "break":
+                return "tk_break";
+                break;
+            case "return":
+                return "tk_return";
+                break;
+            case "continue":
+                return "tk_continue";
+                break;
+            case "if":
+                return "tk_if";
+                break;
+            case "else":
+                return "tk_else";
+                break;
+            default:
+                return "identificador";
+                break;
         }
 
     }
