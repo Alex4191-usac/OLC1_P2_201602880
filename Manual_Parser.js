@@ -1,9 +1,14 @@
-
-const { post } = require('jquery');
 const Token = require('./Token.js');
 
 class Manual_Parser{
-    
+   
+   
+   
+   
+   
+   
+   
+    /* 
     constructor(){
         this.post_analisis = new Token();
         this.Numb_post_analisis;
@@ -560,7 +565,7 @@ class Manual_Parser{
                 temp = this.TokenL[counter];
             }
         }
-    }
+    }*/
     
 
 }

@@ -12,59 +12,31 @@ public class Myclase2{
 
 
 
-/*  
+
 
 public interface interfaz{
 
-    public void Contador(){
-        
-       do{
-            System.out.println ("Contador" + (contador + 1) );
-            
-        } while (contador<10);
-    }
+    contador();
 }
-
-
 public class Myclase{ 
     
     X=3;
     int variable = 10+10/5*3-50;
-    public void MyMetodo(int x , String texto, int v){
-        System.out.println("hola");
-    }
     
-    public int SUMA(){
-        System.out.print("holasdfa"+3+35/5-5);
-        return "SUMADO"+3*5-6;
+    public String valor(){
+        System.out.println("j");
+        return "hola"+3/5-5;
+        
     }
-
-    public String SALUDO(){
-        System.out.println("eyyyyyyyyy");
-        return;
-    }
-    public void MyMetodo2(){
-        while (contador<10 || contador>50){
-             System.out.println(contador + "va aumentando");
-        }
-         
-        if(valor==10){
-            
-            
-        }else if(valor<10 && valor!=true){
-
-        }else if(valor >=100){
-
-        }else{
-            
-        }
-         
-    }
+  
+    
     
    
 }
-  
 
+
+  
+/*
 String variable;
     int variable = 10+10/5*3-50;
     
@@ -130,5 +102,5 @@ public void testif(String valor){
   }
 
 }
-
-  */
+*/
+  

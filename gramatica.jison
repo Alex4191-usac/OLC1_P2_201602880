@@ -376,7 +376,7 @@ L_PARAMETROS_METODO_FUNCION: L_PARAMETROS_METODO_FUNCION coma TIPO_DATO identifi
 						   | coma TIPO_DATO identificador  { $$ = new Nodo("L_PARAMETROS_METODO_FUNCION");
 															$$.AgregarHijo(new Nodo(",","comma"));
 															$$.AgregarHijo($2);
-															$$.AgregarHijo(new Nodo($4,"Id")); } ;
+															$$.AgregarHijo(new Nodo($3,"Id")); } ;
 
 
 
@@ -388,8 +388,7 @@ LLAMADA_METODO: identificador parentesis_izq LLAMADA_PARAMETRO parentesis_der pu
 		$$.AgregarHijo($3);
 		$$.AgregarHijo(new Nodo(")","par_der"));
 		$$.AgregarHijo(new Nodo(";","punto_coma"));}
-		| error punto_coma { console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column); }
-
+		
 	
  
 ;
