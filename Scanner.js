@@ -211,6 +211,7 @@ class Scanner{
                 case 14:
                     if(AscciCode===47){ // /
                         Auxiliar_lex+=cadena;
+                        Auxiliar_lex="";
                         Estado=15;
                         columna++;
                     }else if(AscciCode===42){// * comentario multiple
@@ -514,7 +515,7 @@ class Scanner{
                 return "tk_args";
                 break;
             case "system":
-                return "tk_System";
+                return "tk_system";
                 break;
             case "out":
                 return "tk_out";

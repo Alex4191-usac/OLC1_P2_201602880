@@ -6,3 +6,8 @@
    - Traducion de Codigo Java-Python
    - Analisis Lexico-Sintactico (Mediante la Herramienta JISON)
    - Traduccion de Codigo Java-Javascript
+## Requisitos
+- Navegador Compatible con JavaScript
+- Node Js
+- Docker
+

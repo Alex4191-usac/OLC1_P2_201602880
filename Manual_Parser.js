@@ -1,112 +1,166 @@
 const Token = require('./Token.js');
-
 class Manual_Parser{
-   
-   
-   
-   
-   
-   
-   
-    /* 
+
     constructor(){
         this.post_analisis = new Token();
         this.Numb_post_analisis;
         this.TokenL=[];
+        this.PyhtonCode="";
+        this.Identacion=0;
     }
    
-
-
     LL_Parser(Token_List){
         this.TokenL=Token_List;
         this.post_analisis = this.TokenL[0];
-        
         this.Numb_post_analisis=0;
         this.INICIO();
+        console.log("finalizado")
+        console.log(this.PyhtonCode);
     }
-
     INICIO(){
         this.INSTRUCCIONES();
-        console.log("finalizado")
+        
         
     }
-
     INSTRUCCIONES(){
         if(this.post_analisis.tipo==="tk_public"){
             this.match("tk_public");
             this.TIPO_INSTRUCCION();
+            this.INSTRUCCIONES();
+        }else if(this.post_analisis.tipo==="tk_comentario_simple"){
+            this.SENTENCIA_COMENTARIO();
             this.INSTRUCCIONES();
 
         }
         
         
     }
-
     TIPO_INSTRUCCION(){
-        if(this.post_analisis.tipo=="tk_class"){
-            
+        if(this.post_analisis.tipo==="tk_class"){
+            this.Identacion=0;
             this.match("tk_class");
-            this.match("identificador");
-            this.match("tk_llave_izq");
-            this.LISTA_METODO_FUNCION();
-            this.match("tk_llave_der");
+            if(this.post_analisis.tipo==="identificador"){
+              
+                this.match("identificador");
+                if(this.post_analisis.tipo==="tk_llave_izq"){
+                    this.match("tk_llave_izq");
+                    this.appendPythonCode("class "+this.TokenL[this.Numb_post_analisis-2].lexema+" :"+"\n");
+                    this.Identacion++;
+                    this.LISTA_METODO_FUNCION();
+                    if(this.post_analisis.tipo==="tk_llave_der"){
+                        this.match("tk_llave_der");
+                    }
+                }
             
-        }else{
+            }  
+        }else if(this.post_analisis.tipo==="tk_interface"){
+            this.Identacion=0;
             this.match("tk_interface");
-            this.match("identificador");
-            this.match("tk_llave_izq");
-            this.LISTA_METODO_FUNCION();
-            this.match("tk_llave_der");
-            
+            if(this.post_analisis.tipo==="identificador"){
+                this.match("identificador");
+                if(this.post_analisis.tipo==="tk_llave_izq"){
+                    this.match("tk_llave_izq");
+                    this.appendPythonCode("class "+this.TokenL[this.Numb_post_analisis-2].lexema+" :"+"\n");
+                    this.Identacion++;
+                    this.LISTA_METODO_FUNCION();
+                    if(this.post_analisis.tipo==="tk_llave_der"){
+                        this.match("tk_llave_der");
+                    }
+                }
+            }  
+        }else{
             
         }
+            
+        
     }
-
     LISTA_METODO_FUNCION(){
         this.SUB_INSTRUCCION();
         
     }
-
     SUB_INSTRUCCION(){
         if(this.post_analisis.tipo==="tk_public"){
             this.match("tk_public");
             this.METODO_FUNCION();
-            
-        
-            //this.DECLARACION();
+           
         }else{
-            console.log("asdfad");
+            
             this.DECLARACION();
         }
     }
-
     METODO_FUNCION(){
         if(this.post_analisis.tipo==="tk_void"){
-            
             this.match("tk_void");
-            this.match("identificador");
-            this.match("tk_par_izq");
-            this.PARAMETROS_METODO_FUNCION();
-            this.match("tk_par_der");
-            this.match("tk_llave_izq");
-            this.LISTA_SENTENCIAS();
-            this.match("tk_llave_der");
-            this.SUB_INSTRUCCION();
-        }else if(this.post_analisis.tipo=="static"){
+            if(this.post_analisis.tipo=="identificador"){
+                this.match("identificador");
+                if(this.post_analisis.tipo==="tk_par_izq"){
+                    this.match("tk_par_izq");
+                    this.appendPythonCode(this.tabulador(this.Identacion)+"def "+this.TokenL[this.Numb_post_analisis-2].lexema+"(");
+                    this.PARAMETROS_METODO_FUNCION();
+                    if(this.post_analisis.tipo==="tk_par_der"){
+                        this.match("tk_par_der");
+                        this.appendPythonCode("):\n");
+                        if(this.post_analisis.tipo==="tk_llave_izq"){
+                            this.match("tk_llave_izq");
+                            this.Identacion++;
+                            this.LISTA_SENTENCIAS();
+                            if(this.post_analisis.tipo==="tk_llave_der"){
+                                this.match("tk_llave_der");
+                                this.SUB_INSTRUCCION();
+                                this.Identacion--;
+                            }
+                        }
+                    }
+                }
+            }    
+        }else if(this.post_analisis.tipo=="tk_static"){
             this.match("tk_static");
-            this.match("tk_void");
-            this.match("tk_main");
-            this.match("tk_par_izq");
-            this.match("tk_String");
-            this.match("tk_cor_izq");
-            this.match("tk_cor_der");
-            this.match("tk_args");
-            this.match("tk_par_der");
-            this.match("tk_llave_izq");
-            this.LISTA_SENTENCIAS();
-            this.match("tk_llave_der");
+            if(this.post_analisis.tipo=="tk_void"){
+                this.match("tk_void");
+                if(this.post_analisis.tipo=="tk_main"){
+                    this.match("tk_main");
+                    if(this.post_analisis.tipo=="tk_main"){
+                        this.match("tk_par_izq");
+                        if(this.post_analisis.tipo=="tk_String"){
+                            this.match("tk_String");
+                            if(this.post_analisis.tipo=="tk_cor_izq"){
+                                this.match("tk_cor_izq");
+                                if(this.post_analisis==="tk_cor_der"){
+                                    this.match("tk_cor_der");
+                                    if(this.post_analisis==="tk_args"){
+                                        this.match("tk_args");
+                                        if(this.post_analisis==="tk_par_der"){
+                                            this.match("tk_par_der");
+                                            if(this.post_analisis==="tk_llave_izq"){
+                                                this.match("tk_llave_izq");
+                                                this.Identacion++;
+                                                this.LISTA_SENTENCIAS();
+                                                if(this.post_analisis==="tk_llave_der"){
+                                                    this.match("tk_llave_der");
+                                                    this.appendPythonCode(this.tabulador(this.Identacion)+"def "+this.TokenL[this.Numb_post_analisis-2].lexema+"(");
+                                                    this.SUB_INSTRUCCION();
+                                                    this.Identacion--;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             
-            this.SUB_INSTRUCCION();
+            
+            
+           
+           
+            
+           
+           
+            
+           
+            
         
         }else{
             console.log("entroooooo");
@@ -122,8 +176,6 @@ class Manual_Parser{
            
             ////this.LISTA_METODO_FUNCION();
             this.SUB_INSTRUCCION();
-
-
         }
     }
            /* this.match("tk_public");
@@ -327,31 +379,48 @@ class Manual_Parser{
 
     /*PARAMETROS_METODO_FUNCION */
     PARAMETROS_METODO_FUNCION(){
+       
         if(this.post_analisis.tipo=="tk_int"){
             //TIPO_DATO
             this.match("tk_int");
-            this.match("identificador");
-            this.L_PARAMETROS_METODO_FUNCION();
+            if(this.post_analisis.tipo=="identificador"){
+                this.match("identificador");
+                this.appendPythonCode(this.TokenL[this.Numb_post_analisis-1].lexema);
+                this.L_PARAMETROS_METODO_FUNCION();
+            }
+            
         }else if(this.post_analisis.tipo=="tk_double"){
             //TIPO_DATO
             this.match("tk_double");
-            this.match("identificador");
-            this.L_PARAMETROS_METODO_FUNCION();
+            if(this.post_analisis.tipo=="identificador"){
+                this.match("identificador");
+                this.appendPythonCode(this.TokenL[this.Numb_post_analisis-1].lexema);
+                this.L_PARAMETROS_METODO_FUNCION();
+            }
         }else if(this.post_analisis.tipo=="tk_string"){
             ///TIPO_DATO
             this.match("tk_string");
-            this.match("identificador");
-            this.L_PARAMETROS_METODO_FUNCION();
+            if(this.post_analisis.tipo=="identificador"){
+                this.match("identificador");
+                this.appendPythonCode(this.TokenL[this.Numb_post_analisis-1].lexema);
+                this.L_PARAMETROS_METODO_FUNCION();
+            }
         }else if(this.post_analisis.tipo=="tk_boolean"){
             //TIPO_DATO
             this.match("tk_boolean");
-            this.match("identificador");
-            this.L_PARAMETROS_METODO_FUNCION();
+            if(this.post_analisis.tipo=="identificador"){
+                this.match("identificador");
+                this.appendPythonCode(this.TokenL[this.Numb_post_analisis-1].lexema);
+                this.L_PARAMETROS_METODO_FUNCION();
+            }
         }else if(this.post_analisis.tipo=="tk_char"){
             ///TIPO_DATO
             this.match("tk_char");
-            this.match("identificador");
-            this.L_PARAMETROS_METODO_FUNCION();
+            if(this.post_analisis.tipo=="identificador"){
+                this.match("identificador");
+                this.appendPythonCode(this.TokenL[this.Numb_post_analisis-1].lexema);
+                this.L_PARAMETROS_METODO_FUNCION();
+            }
         }
         
        
@@ -361,8 +430,12 @@ class Manual_Parser{
         if(this.post_analisis.tipo==="tk_coma"){
             this.match("tk_coma");
             this.TIPO_DATO();
-            this.match("identificador");
-            this.L_PARAMETROS_METODO_FUNCION();
+            if(this.post_analisis.tipo==="identificador"){
+                this.match("identificador");
+                this.appendPythonCode(","+this.TokenL[this.Numb_post_analisis-1].lexema);
+                this.L_PARAMETROS_METODO_FUNCION();
+            }
+            
         }
     }
 
@@ -529,7 +602,12 @@ class Manual_Parser{
     }
 
 
-
+    SENTENCIA_COMENTARIO(){
+        this.match("tk_comentario_simple");
+            this.appendPythonCode("#"+this.TokenL[this.Numb_post_analisis-1].lexema+"\n");
+        
+        
+    }
 
 
     match(tipo){
@@ -548,6 +626,10 @@ class Manual_Parser{
             }
         }
     }
+
+    appendPythonCode(codeString){
+        this.PyhtonCode=this.PyhtonCode+codeString;
+    }
     
     panicMode(counter){
         if (counter < this.TokenL.length-1) {
@@ -565,7 +647,20 @@ class Manual_Parser{
                 temp = this.TokenL[counter];
             }
         }
-    }*/
+    }
+
+    //REGRESA UN STRING CON n TABULACIONES
+    tabulador(n){
+    
+        if (n==0){
+        return "";
+        }
+        var aux = "";
+        for (var i = 0; i < n; i++){
+            aux = aux + "\t";
+        }
+        return aux;
+    }
     
 
 }

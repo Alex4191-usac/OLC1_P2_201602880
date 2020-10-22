@@ -19,11 +19,15 @@ let parser_lex = require('./Manual_Parser.js');
 fs.readFile('test.java', 'utf8',function(err,data){
     //let raiz = new tree_ast();
     let scanlex = new scanner2();
-    //let parserlex = new parser_lex();
+    let parserlex = new parser_lex();
     //let arbolAST = parser.parse(data.toString())
     //console.log(raiz.recorrer_arbol(arbolAST));
     //console.log(parser_Js.parse(data.toString()));
     scanlex.Scanner_Lex(data);
-    //parserlex.LL_Parser(scanlex.Token_Lista);
+    parserlex.LL_Parser(scanlex.Token_Lista);
+    //parser_lex.(scanlex.Token_Lista);
+    
+    //parser_lex(scanlex.Token_Lista);
+    
 
 });
