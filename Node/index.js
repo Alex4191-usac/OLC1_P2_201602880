@@ -26,34 +26,24 @@ app.use(express.json());
 app.post('/Curso/', function (req, res) {
     var datos = req.body.Nombre.toString();
     console.log(datos.length);
-    console.log(gramaticaJISON.parse(datos));
-   // console.log("romantica Style in da world");
-    //let textJison = gramaticaJISON.parse(textA);
-    //console.log(textJison);
+    let JsonGrammar = gramaticaJISON.parse(datos);
     
-    //Iniciar_Analisis(data_text);
-    //console.log(req.body.Nombre.toString());
-    res.send(JSON.stringify( {Saludo: "Bienvenidos a " + req.body.Nombre.toString()} ));
-    
+    let raiz = new recorrido_ARBOL();
+    let string_ast =raiz.recorrer_arbol(JsonGrammar.ast);
+    console.log(string_ast); 
+   //res.send(JSON.stringify( JsonGrammar.lista_error ));
+   //es.send(JSON.stringify( {Saludo: "Bienvenidos a " + "holi"} ));
+   res.send(JSON.stringify( {Saludo: string_ast} ));
+
+
 
     
 });
 // app.use('/api/parser', require('./rutas/parser'));
 
-//FUNCION ANALSIS
 
-function Iniciar_Analisis(texto){
-    if(texto!=undefined){
-        
-        console.log("entro a Iniciar Analisis0");
-        console.log(texto.toString());
-        console.log("ROMANTIC STYLE IN DA WORLD")
-        console.log(texto);
-        
-        let analisis_Jison=gramaticaJISON.parse(texto.toString());
-        console.log(analisis_Jison);
-    }
-}
+
+
 
 
 app.listen(port,ip, async () => {

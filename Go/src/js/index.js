@@ -87,6 +87,8 @@ function obtenerSaludo(){
   var curso = TxtCSharp.value;
 
   
+
+  
   //console.log(curso);
   ;
   
@@ -99,13 +101,21 @@ function obtenerSaludo(){
       
   }
   ).then(res => res.json())
-  
   .catch(error => console.error('Error:', error))
   .then(response => view(response));
   
 }
 
 function view(response){
-  document.getElementById("saludo").innerHTML = response.Saludo;
-  
+ 
+  console.log("MANDO UNA RESPUESTA DOS0");
+  console.log(response.Saludo);
+  console.log("fin de respuesta");
+
+  d3.select(document.getElementById("graph")).graphviz()
+  .renderDot('digraph  {'+response.Saludo+'}');
+
+  //document.getElementById("saludo").innerHTML = response.Saludo;
+  //dot_value('a->b');
 }
+

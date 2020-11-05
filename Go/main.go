@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -56,10 +57,10 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer resp.Body.Close()
-	//bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
 	//fmt.Println(string(bodyBytes))
-	//fmt.Fprintf(w, string(bodyBytes))
+	fmt.Fprintf(w, string(bodyBytes))
 }
 
 /*TEST FILES*/
