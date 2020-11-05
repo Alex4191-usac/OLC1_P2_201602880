@@ -7,7 +7,10 @@ const morgan = require('morgan');
 /*PARSER */
 let gramaticaJISON = require('./gramatica.js');
 let recorrido_ARBOL = require('./recorrer_nodo.js');
+let token = require('./Token');
+
 const { text } = require('body-parser');
+const Token = require('./Token');
 
 let textA="";
 
@@ -27,23 +30,53 @@ app.post('/Curso/', function (req, res) {
     var datos = req.body.Nombre.toString();
     console.log(datos.length);
     let JsonGrammar = gramaticaJISON.parse(datos);
-    
     let raiz = new recorrido_ARBOL();
     let string_ast =raiz.recorrer_arbol(JsonGrammar.ast);
-    console.log(string_ast); 
-   //res.send(JSON.stringify( JsonGrammar.lista_error ));
-   //es.send(JSON.stringify( {Saludo: "Bienvenidos a " + "holi"} ));
-   res.send(JSON.stringify( {Saludo: string_ast} ));
 
-
-
+    let body_table_report = String_table(JsonGrammar.lista_token);
     
+    res.send(JSON.stringify( {Saludo: string_ast, Saludo2:body_table_report} ));
+
+
+
+
 });
 // app.use('/api/parser', require('./rutas/parser'));
 
+function String_table (TokenObject){
+    let body_table = "{"+'"'+`tokens`+'"'+":[";
+    let count = 0;
+    Token_tmp = new Token();
+    for (const key in TokenObject) {
+        if (TokenObject.hasOwnProperty(key)) {
+            Token_tmp = TokenObject[key];
+            if(count===TokenObject.length-1){
+                body_table+=
+                `{`+`"`+`fila`+`"`+`:`+`"`+Token_tmp.fila+`"`+`,`+
+                `"`+`columna`+`"`+`:`+`"`+Token_tmp.columna+`"`+`,`+
+                `"`+`lexema`+`"`+`:`+`"`+Token_tmp.lexema+`"`+`,`+
+                `"`+`tipo`+`"`+`:`+`"`+Token_tmp.tipo+`"`+`,`+
+                `"`+`correlativo`+`"`+`:`+`"`+Token_tmp.correlativo+`"`+`}`
+            }else{
+                body_table+=
+                `{`+`"`+`fila`+`"`+`:`+`"`+Token_tmp.fila+`"`+`,`+
+                `"`+`columna`+`"`+`:`+`"`+Token_tmp.columna+`"`+`,`+
+                `"`+`lexema`+`"`+`:`+`"`+Token_tmp.lexema+`"`+`,`+
+                `"`+`tipo`+`"`+`:`+`"`+Token_tmp.tipo+`"`+`,`+
+                `"`+`correlativo`+`"`+`:`+`"`+Token_tmp.correlativo+`"`+`},`
+            }
+        }
+        count++;
+    }
+    return body_table+`]}`;
+}
 
-
-
+/*<tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr> */
 
 
 app.listen(port,ip, async () => {

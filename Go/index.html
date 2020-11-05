@@ -34,6 +34,9 @@
          
             <button class="btn btn-danger" onclick="addTab()"><span class="oi oi-plus"></span> Add Tab</button>
             <button class="btn btn-success" onclick="obtenerSaludo()" ><span class="oi oi-play-circle"></span> Run</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+             ver Reporte Tokens  
+            </button>
             <input class="btn btn-primary" type="file" id="fileinput" onchange="openArchive(event)" />
         </div>    
         <div id="myTabPage">
@@ -64,6 +67,40 @@
         
     </div>
         </div>
+        <!--MODAL-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Reporte de Tokens</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <!--TABLE-->
+                    <table class="table">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Lexema</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Fila</th>
+                            <th scope="col">Col</th>
+                          </tr>
+                        </thead>
+                        <tbody id="token_display">
+                           </tbody> 
+                        </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--END OF MODAL-->
         <div class="row">
             <div id="graph" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
               

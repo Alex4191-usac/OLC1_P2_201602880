@@ -1,5 +1,7 @@
 %{
 	const Nodo = require('./AstTree');
+	const Token = require('./Token');
+	let Token_List = [];
 	let Error_Array = [];
 %}
 /*--------------------------------------------analisis lexico--------------------------*/
@@ -10,58 +12,106 @@
 
 [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]			// comentario multiple líneas		
 "//".*										// comentario simple línea
-
+//fila,columna,lexema,tipo,correlativo
 /*----------------------------------------------palabras reservadas--------------------*/
-"public"            %{return 'tk_public';%}
-"static"            %{return 'tk_static';%}
-"class"             %{return 'tk_class';%}
-"interface"         %{return 'tk_interface';%}
-"void"              %{return 'tk_void';%}
-"main"              %{return 'tk_main';%}
-"args"              %{return 'tk_args';%}
-"System"			%{return 'tk_System';%}
-"out"				%{return 'tk_out';%}
-"print"				%{return 'tk_print';%}
-"println"			%{return 'tk_println';%}
-"int"               %{return 'tk_int';%}
-"double"            %{return 'tk_double';%}
-"char"              %{return 'tk_char';%}
-"boolean"           %{return 'tk_boolean';%}
-"String"            %{return 'tk_String';%}
-"for"               %{return 'tk_for';%}
-"while"             %{return 'tk_while';%}
-"do"                %{return 'tk_do';%}
-"break"             %{return 'tk_break';%}
-"return"            %{return 'tk_return';%}
-"continue"          %{return 'tk_continue';%}
-"if"                %{return 'tk_if';%}
-"else"              %{return 'tk_else';%}
+"public"            %{	Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"public","tk_public",1));
+						return 'tk_public';%}
+"static"            %{	Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"static","tk_static",2));
+						return 'tk_static';%}
+"class"             %{	Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"class","tk_class",3));
+						return 'tk_class';%}
+"interface"         %{	Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"interface","tk_interface",4));
+						return 'tk_interface';%}
+"void"              %{	Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"void","tk_void",5));
+						return 'tk_void';%}
+"main"              %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"main","tk_main",6));
+						return 'tk_main';%}
+"args"              %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"args","tk_args",7));
+						return 'tk_args';%}
+"System"			%{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"System","tk_System",8));
+						return 'tk_System';%}
+"out"				%{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"out","tk_out",9));
+						return 'tk_out';%}
+"print"				%{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"print","tk_print",10));
+						return 'tk_print';%}
+"println"			%{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"println","tk_println",11));
+						return 'tk_println';%}
+"int"               %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"int","tk_int",12));
+						return 'tk_int';%}
+"double"            %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"double","tk_double",13));
+						return 'tk_double';%}
+"char"              %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"char","tk_char",14));
+						return 'tk_char';%}
+"boolean"           %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"boolean","tk_boolean",15));
+						return 'tk_boolean';%}
+"String"            %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"String","tk_String",16));
+						return 'tk_String';%}
+"for"               %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"for","tk_for",17));
+						return 'tk_for';%}
+"while"             %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"while","tk_while",18));
+						return 'tk_while';%}
+"do"                %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"do","tk_do",19));
+						return 'tk_do';%}
+"break"             %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"break","tk_break",20));
+						return 'tk_break';%}
+"return"            %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"return","tk_return",21));
+						return 'tk_return';%}
+"continue"          %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"continue","tk_continue",22));
+						return 'tk_continue';%}
+"if"                %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"if","tk_if",23));
+						return 'tk_if';%}
+"else"              %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"else","tk_else",24));
+						return 'tk_else';%}
 
 /*------------------------------------------------------------------------------------------*/
-";"                 %{return 'punto_coma'; %}
-"("                 %{return 'parentesis_izq'; %}
-")"                 %{return 'parentesis_der'; %}
-"["                 %{return 'corchete_izq'; %}
-"]"                 %{return 'corchete_der'; %}
-"{"                 %{return 'llave_izq'%}
-"}"                 %{return 'llave_der'%}
-","                 %{return 'coma'; %}
-"."                 %{return 'punto'; %}
-">="                %{return 'op_mayorigual';%}
-"<="                %{return 'op_menor_igual';%}
-"&&"                %{return 'op_and';%}
-"||"                %{return 'op_or';%}
-"!="                %{return 'op_not_igual';%}
-"=="                %{return 'op_igual_igual';%}
-"+"					%{return 'mas';%}
-"-"					%{return 'MENOS';%}
-"*"					%{return 'por';%}
-"/"					%{return 'dividido';%}
-"^"                 %{return 'op_xor';%}
-">"                 %{return 'mayor';%}
-"<"                 %{return 'menor';%}
-"="                 %{return 'igual'; %}
-"!"                 %{return 'op_not';%}
+";"                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,";","",25));
+						return 'punto_coma'; %}
+"("                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"(","parentesis_izq",26));
+						return 'parentesis_izq'; %}
+")"                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,")","parentesis_der",27));
+						return 'parentesis_der'; %}
+"["                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"[","conrchete_izq",28));
+						return 'corchete_izq'; %}
+"]"                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"]","corchete_der",29));
+						return 'corchete_der'; %}
+"{"                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"{","llave_izq",30));
+						return 'llave_izq'%}
+"}"                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"}","llave_der",31));
+						return 'llave_der'%}
+","                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,",","coma",32));
+						return 'coma'; %}
+"."                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,".","punto",33));
+						return 'punto'; %}
+">="                %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,">=","op_mayorigual",34));
+						return 'op_mayorigual';%}
+"<="                %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"<=","op_menor_igual",35));
+						return 'op_menor_igual';%}
+"&&"                %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"&&","op_and",36));
+						return 'op_and';%}
+"||"                %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"||","op_or",37));
+						return 'op_or';%}
+"!="                %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"!=","op_not_igual",38));
+						return 'op_not_igual';%}
+"=="                %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"==","op_igual_igual",39));
+						return 'op_igual_igual';%}
+"+"					%{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"+","mas",40));
+						return 'mas';%}
+"-"					%{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"-","menos",41));
+						return 'MENOS';%}
+"*"					%{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"*","por",42));
+						return 'por';%}
+"/"					%{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"/","divido",43));
+						return 'dividido';%}
+"^"                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"^","op_xor",44));
+						return 'op_xor';%}
+">"                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,">","mayor",45));
+						return 'mayor';%}
+"<"                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"<","menor",46));
+						return 'menor';%}
+"="                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"=","igual",47));
+						return 'igual'; %}
+"!"                 %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,"!","not",48));
+						return 'op_not';%}
 /* --------------------------especiales--------------------------------------*/
 
 [ \r\t\f]+            %{ /*ignore */%}
@@ -71,11 +121,18 @@
 
 /*---------------------- EXPRESIONES REGULARES-------------------------*/
 
-\"[^\"]*\"              %{yytext = yytext.substr(1,yyleng-2); return 'CADENA'; %}
-"'"[^']"'"				%{yytext = yytext.substr(1,yyleng-2); return 'Caracter'; %}
-[0-9]+("."[0-9]+)?\b    %{return 'decimal'; %}
-[0-9]+\b                %{return 'entero'; %}
-([a-zA-Z])[a-zA-Z0-9_]* %{return 'identificador'; %}
+\"[^\"]*\"              %{yytext = yytext.substr(1,yyleng-2); 
+						  Token_List.push(new Token(yylloc.first_line,yylloc.first_column,yytext,"Cadena",49));
+						return 'CADENA'; %}
+"'"[^']"'"				%{yytext = yytext.substr(1,yyleng-2); 
+						Token_List.push(new Token(yylloc.first_line,yylloc.first_column,yytext,"caracter",50));
+						return 'Caracter'; %}
+[0-9]+("."[0-9]+)?\b    %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,yytext,"decimal",51));
+						return 'decimal'; %}
+[0-9]+\b                %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,yytext,"entero",52));
+						return 'entero'; %}
+([a-zA-Z])[a-zA-Z0-9_]* %{Token_List.push(new Token(yylloc.first_line,yylloc.first_column,yytext,"identificador",53));
+						return 'identificador'; %}
 
 <<EOF>>                 %{return 'EOF'; %}
 
@@ -102,7 +159,13 @@
 
 INICIO: INSTRUCCIONES EOF  { $$=new Nodo("INICIO");
 							$$.AgregarHijo($1);
-							return {ast:$$ , lista_error: Error_Array}; };
+							let tempErrores =[];
+							let tempTokens =[]
+							tempErrores = Error_Array;
+							tempTokens = Token_List;
+							Error_Array = [];
+							Token_List = []
+							return {ast:$$ , lista_error: tempErrores, lista_token: tempTokens}; };
 
 INSTRUCCIONES: INSTRUCCIONES TIPO_INSTRUCCION {$$ = new Nodo("INSTRUCCIONES");
 											   $$.AgregarHijo($1);
@@ -245,7 +308,7 @@ SUB_INSTRUCCION:
 									 $$.AgregarHijo($1);}
 				| SENTENCIA_IMPRIMIR{$$= new Nodo("LISTA_SUBINSTRUCCION");
 									$$.AgregarHijo($1);}
-				
+				| error punto_coma{Error_Array.push('Este es un error Sintactico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);}
 
 ;
 SENTENCIA_IMPRIMIR:

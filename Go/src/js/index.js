@@ -1,3 +1,6 @@
+
+
+
 var tabIndex=2;
 
 function openEditorTab(evt, tabName) {
@@ -81,15 +84,10 @@ function showText(contenido) {
 
 function obtenerSaludo(){
 
-  
+  removeAllChildNodes(document.querySelector('#token_display'));
   var indice = document.getElementsByClassName("nav-link active tabBtn")
   var TxtCSharp = document.getElementById("txtArea"+indice[0].id)
   var curso = TxtCSharp.value;
-
-  
-
-  
-  //console.log(curso);
   ;
   
   fetch('../getInfo', {
@@ -108,14 +106,55 @@ function obtenerSaludo(){
 
 function view(response){
  
-  console.log("MANDO UNA RESPUESTA DOS0");
-  console.log(response.Saludo);
-  console.log("fin de respuesta");
-
   d3.select(document.getElementById("graph")).graphviz()
   .renderDot('digraph  {'+response.Saludo+'}');
+  
+  TokenReport(response.Saludo2);
+}
 
-  //document.getElementById("saludo").innerHTML = response.Saludo;
-  //dot_value('a->b');
+function TokenReport(TokenObject){
+  let obj_t = JSON.parse(TokenObject);
+  let NewRow;
+  let NewColumn;
+  console.log(obj_t.tokens[0].tipo);
+  console.log(obj_t.tokens[1].tipo);
+  console.log(obj_t.tokens[2].tipo);
+  for (tk in obj_t.tokens) {
+   
+    NewRow=document.createElement("tr");
+
+    NewColumn=document.createElement("th");
+    NewColumn.innerHTML=tk;
+    NewRow.appendChild(NewColumn);
+
+    NewColumn=document.createElement("td");
+    NewColumn.innerHTML=obj_t.tokens[tk].fila;
+    NewRow.appendChild(NewColumn);
+
+    NewColumn=document.createElement("td");
+    NewColumn.innerHTML=obj_t.tokens[tk].columna;
+    NewRow.appendChild(NewColumn);
+
+    NewColumn=document.createElement("td");
+    NewColumn.innerHTML=`"`+obj_t.tokens[tk].lexema+`"`;
+    NewRow.appendChild(NewColumn);
+
+    NewColumn=document.createElement("td");
+    NewColumn.innerHTML=obj_t.tokens[tk].tipo;
+    NewRow.appendChild(NewColumn);
+
+    NewColumn=document.createElement("td");
+    NewColumn.innerHTML=obj_t.tokens[tk].correlativo;
+    NewRow.appendChild(NewColumn);
+    
+    document.getElementById("token_display").appendChild(NewRow);
+  }
+  
+}
+
+function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+  }
 }
 
