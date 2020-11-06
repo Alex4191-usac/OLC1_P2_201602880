@@ -2,6 +2,8 @@ let id_n=1;
 let concatena="";
 class Recorrer_nodo{
     
+    
+
     recorrer_arbol(nodo){
         
        if(nodo!=undefined ){

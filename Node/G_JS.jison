@@ -98,113 +98,168 @@
 
 %%
 
-INICIO: INSTRUCCIONES EOF  { $$=`${$1}`; return $$; };
-
-INSTRUCCIONES: INSTRUCCIONES TIPO_INSTRUCCION {$$ =`${$1}${$2}`; }
-            |  TIPO_INSTRUCCION {$$ =`${$1}`; }
-
-           
+INICIO
+	: LISTA_TIPO_INSTRUCCION EOF {
+		// cuando se haya reconocido la entrada completa retornamos la entrada traducida
+		return $1;
+	}
 ;
 
-TIPO_INSTRUCCION: tk_public tk_class identificador llave_izq LISTA_METODO_FUNCION llave_der { $$ = `${$2} ${$3} ${$4} \n${$5} \n${$6}\n`;}
-                | tk_public tk_interface identificador llave_izq SUB_INSTRUCCION_INTERFACE llave_der { }
+LISTA_TIPO_INSTRUCCION: TIPO_INSTRUCCION LISTA_TIPO_INSTRUCCION { $$ = `${$1}${$2}`; }
+					| TIPO_INSTRUCCION  { $$ = `${$1}`; }
+;
+
+
+TIPO_INSTRUCCION: tk_public tk_class identificador BLOQUESENTENCIAS_PADRE { $$ = `${$2} ${$3} ${$4}`;} 
+				| tk_public tk_interface identificador BLOQUESENTENCIAS_PADRE {}
+				| cm_multiple {$$ =`${$1}\n`; }
+				| cm_simple {$$ =`${$1}\n`; }
+				| error llave_der {$$=``;}
+;
+
+BLOQUESENTENCIAS_PADRE
+					: llave_izq LISTA_SUB_INSTRUCCION llave_der	{ $$ = `{\n${$2}}`; }
+
+;
+LISTA_SUB_INSTRUCCION:  SUB_INSTRUCCION LISTA_SUB_INSTRUCCION { $$ = `${$1}${$2}`; }
+					| SUB_INSTRUCCION { $$ = `${$1}`; }
+
+
+;
+
+SUB_INSTRUCCION: tk_public tk_void identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der BLOQUESENTENCIAS_HIJO {$$=`\t ${$3}${$4}${$5}${$6}${$7}`;}
+				| tk_public TYPE identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der BLOQUESENTENCIAS_HIJO {$$=`\t function ${$3}${$4}${$5}${$6}${$7}`;}
+				| tk_public tk_static tk_void tk_main parentesis_izq tk_String corchete_izq corchete_der tk_args parentesis_der BLOQUESENTENCIAS_HIJO {$$=`\t Main ${$5}${$10}${$11}`;}
+				| DEFDECLARACION punto_coma {$$ =`${$1};`; }
 				| cm_multiple {$$ =`${$1}\n`; }
 				| cm_simple {$$ =`${$1}\n`; }
 ;
 
-LISTA_METODO_FUNCION: LISTA_METODO_FUNCION METODO_FUNCION  {  $$ =`${$1}${$2}`;}
-					| METODO_FUNCION {$$ =`${$1}`;}
+BLOQUESENTENCIAS_HIJO 
+				: llave_izq INSTRUCCIONES llave_der	{ $$ = `{\n${$2}}`; }
 ;
 
-METODO_FUNCION:   tk_public tk_void identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der llave_izq LISTA_SUBINSTRUCCION llave_der {$$=`\t ${$3}${$4}${$5}${$6}${$7}\n${$8}\n`;}																																													}
-				| tk_public TIPO_DATO identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der llave_izq LISTA_SUBINSTRUCCION SENTENCIA_RETURN punto_coma llave_der {$$=`\t function ${$3}${$4}${$5}${$6}${$7}\n${$8}${$9};\n${$11}\n`;}
-				| tk_public tk_static tk_void tk_main parentesis_izq tk_String corchete_izq corchete_der tk_args parentesis_der llave_izq LISTA_SUBINSTRUCCION llave_der {$$=``;}
-				| cm_multiple {$$ =`${$1}`; }
-				| cm_simple {$$ =`${$1}`; }
-				| DECLARACION { $$ =`${$1}`; }
-;
+PARAMETROS_METODO_FUNCION: TYPE EXP_NUMERICA L_PARAMETROS_METODO_FUNCION { $$=`${$2}${$3}`; }
+						| TYPE EXP_NUMERICA {$$=`${$2}`;}
+						| {$$=``;}
+; 
 
-
-
-SUB_INSTRUCCION_INTERFACE:  SUB_INSTRUCCION_INTERFACE LLAMADA_METODO {	}
-						 | LLAMADA_METODO {}
+L_PARAMETROS_METODO_FUNCION: L_PARAMETROS_METODO_FUNCION coma TYPE EXP_NUMERICA  {$$=`${$1}${$2}${$4}`; }
+						   | coma TYPE EXP_NUMERICA  {$$=`${$1}${$3}` ; } 
+						   
 ;
 
 
-
-LISTA_SUBINSTRUCCION: LISTA_SUBINSTRUCCION SUB_INSTRUCCION  { $$ =`${$1}\n${$2}`;}
-					| SUB_INSTRUCCION {$$ =`${$1}`;}
+INSTRUCCIONES
+	:  INSTRUCCION INSTRUCCIONES	{ $$ = `${$1}${$2}`; }
+	| INSTRUCCION					{ $$ = `${$1}`; }
 ;
 
-SUB_INSTRUCCION: 
-			     DECLARACION {$$ = `${$1}`;}
-				|LLAMADA_METODO {$$ = `${$1}`;}
-				| tk_for parentesis_izq DECLARACION EXP_LOGICA punto_coma  identificador DECLARACION_CONTADOR parentesis_der llave_izq LISTA_SUBINSTRUCCION SENTENCIA_BC llave_der {$$=`\t for${$2}${$3}${$4}${$5}${$6}${$7}${$8}${$9}\n${$10}\n${$11}\n${$12}\n`;}
-				| tk_while parentesis_izq EXP_LOGICA parentesis_der llave_izq LISTA_SUBINSTRUCCION SENTENCIA_BC  llave_der {$$=`\t while(${$3})${$5}\n${$6}\n${$7}\n${$8}\n`;}
-				| tk_do llave_izq LISTA_SUBINSTRUCCION SENTENCIA_BC llave_der tk_while parentesis_izq EXP_LOGICA parentesis_der punto_coma {$$ = `\t do${$2}\n${$3}\n${$4}\n${$5}while${$7}${$8}${$9};\n`;}
-				| SENTENCIA_CONTROL {$$=`${$1}`;}
-				| SENTENCIA_IMPRIMIR{$$= `${$1}`;}
-				| cm_multiple {$$ =`${$1}`; }
-				| cm_simple {$$ =`${$1}`; }
+INSTRUCCION
+	: DEFDECLARACION punto_coma		{ $$ = `${$1}${$2}\n`; }
+	| LLAMADA_METODO punto_coma     { $$ = `${$1};\n`; }
+    | DEFIF						{ $$ = `${$1}\n`; }
+    | DEFWHILE					{ $$ = `${$1}\n`; }
+	| DEFFOR					{ $$ = `${$1}\n`; }
+	| DEFDO tk_while parentesis_izq EXP_LOGICA parentesis_der punto_coma {$$ = `${$1}\n${$2}${$3}${$4}${$5};\n`;}
+    | DEFPRINT punto_coma 			{ $$ = `${$1};\n`; }
+	| SENTENCIA_RETURN punto_coma { $$ = `${$1};\n`; }
+	| SENTENCIA_BC punto_coma  { $$ = `${$1};\n`; }
+	| cm_multiple {$$ =`${$1}\n`; }
+	| cm_simple {$$ =`${$1}\n`; }
+	| error punto_coma  {$$=``;}
+	
+	
+;
+
+BLOQUESENTENCIAS
+    : llave_izq INSTRUCCIONES llave_der	{ $$ = `{${$2}\n}`; }
+;
+
+DEFDECLARACION:   TYPE LISTA_VARIABLES  {$$ = `\t var ${$2}`;}
+				| TYPE LISTA_VARIABLES igual EXP_NUMERICA  { $$ =`\t var ${$2}${$3}${$4}`;}
+				| LISTA_VARIABLES igual EXP_NUMERICA  {$$ = `\t ${$1}${$2}${$3}`;}
+				| identificador mas mas  { $$=`\t ${$1}${$2}${$3}`;}
+				| identificador MENOS MENOS  { $$=`\t ${$1}${$2}${$3}`;}
 				
-
-;
-SENTENCIA_IMPRIMIR:
-				tk_System punto tk_out punto tk_println parentesis_izq EXP_NUMERICA parentesis_der punto_coma {$$ = `\t console.log(${$7});\n`;}
-				| tk_System punto tk_out punto tk_print parentesis_izq EXP_NUMERICA parentesis_der punto_coma {$$ = `\t console.log(${$7});\n`;}
-																																							}
 ;
 
-SENTENCIA_CONTROL:
-				  tk_if parentesis_izq EXP_LOGICA parentesis_der llave_izq SUB_INSTRUCCION llave_der  { $$=` if${$2}${$3}${$4}${$5}\n${$6}\n${$7}\n`;}															
-				| tk_if parentesis_izq EXP_LOGICA parentesis_der llave_izq SUB_INSTRUCCION llave_der tk_else llave_izq SUB_INSTRUCCION llave_der  {$$=` if${$2}${$3}${$4}${$5}\n${$6}\n${$7}else${$9}\n${$10}\n${$11}\n`;}
-				| tk_if parentesis_izq EXP_LOGICA parentesis_der llave_izq SUB_INSTRUCCION llave_der tk_else SENTENCIA_CONTROL {$$=` if${$2}${$3}${$4}${$5}\n${$6}\n${$7}else${$9}`;}
-				;
+LISTA_VARIABLES:  coma identificador LISTA_VARIABLES  {$$ =`${$1}${$2}${$3}`;}
+				| identificador {$$ = `${$1}`;}
+    }
+  		
+;
 
 
 
-DECLARACION:    TIPO_DATO LISTA_VARIABLES punto_coma {$$ = `\t let ${$2};\n`;}
-				| TIPO_DATO LISTA_VARIABLES igual EXP_NUMERICA punto_coma { $$ =`\t let ${$2}${$3}${$4}${$5}\n`;}
-				| LISTA_VARIABLES igual EXP_NUMERICA punto_coma {$$ = `\t ${$1}${$2}${$3}${$4}\n`;}
-				| identificador mas mas punto_coma { $$=`\t ${$1}${$2}${$3}${$4}\n`;}
-				| identificador MENOS MENOS punto_coma { $$=`\t ${$1}${$2}${$3}${$4}\n`;}
-				
-				
+LLAMADA_METODO
+		: identificador parentesis_izq LLAMADA_PARAMETRO parentesis_der  {$$= `${$1}${$2}${$3}${$4}`;}
+		
+;
+
+LLAMADA_PARAMETRO: EXP_NUMERICA LISTA_LLAMADA_PARAMETRO { $$ = `${$1}${$2}`;  }
+				 | EXP_NUMERICA {$$ = `${$1}`;}
+				 |{$$ = ``;}
+;
+
+LISTA_LLAMADA_PARAMETRO:  coma EXP_NUMERICA LISTA_LLAMADA_PARAMETRO { $$ =`${$1}${$2}${$3}`;}
+				| coma EXP_NUMERICA {$$ = `,${$2}`;}								  
+;
+
+
+
+DEFIF
+    : tk_if parentesis_izq EXP_LOGICA parentesis_der BLOQUESENTENCIAS							{ $$ = `${$1}${$2}${$3}${$4}${$5}`; }
+    | tk_if parentesis_izq EXP_LOGICA parentesis_der BLOQUESENTENCIAS tk_else BLOQUESENTENCIAS	{ $$ = `${$1}${$2}${$3}${$4}${$5}${$6}${$7}`; }
+    | tk_if parentesis_izq EXP_LOGICA parentesis_der BLOQUESENTENCIAS tk_else DEFIF				{ $$ = `${$1}${$2}${$3}${$4}${$5}${$6}${$7}`; }
+;
+
+DEFPRINT
+    : tk_System punto tk_out punto tk_println parentesis_izq EXP_NUMERICA parentesis_der {$$ = `\t console.log(${$7})\n`;}
+	| tk_System punto tk_out punto tk_print parentesis_izq EXP_NUMERICA parentesis_der{$$ = `\t console.log(${$7})\n`;}
+;
+
+DEFWHILE
+    
+    : tk_while parentesis_izq EXP_LOGICA parentesis_der BLOQUESENTENCIAS { $$ = `while ( ${$3} ) \n${$5}`; }
+    
+;
+
+DEFFOR
+
+	: tk_for parentesis_izq DEFDECLARACION punto_coma EXP_LOGICA punto_coma DECLARACION_CONTADOR parentesis_der BLOQUESENTENCIAS { $$ = `for ( ${$3};${$5};${$7} ) `; }
+
+;
+
+DEFDO 
+
+	: tk_do BLOQUESENTENCIAS { $$ = `do`; }
+;
+
+
+
+TYPE: 
+		tk_int { $$ =``; }
+        | tk_double {  $$ =``; }
+        | tk_String {  $$ =``;  }
+        | tk_boolean { $$ =``;   }
+        | tk_char {  $$ =``;  }
+;
+
+SENTENCIA_RETURN: tk_return EXP_NUMERICA { $$=`return ${$2}`;}
+				| tk_return {$$ = `return`;}
+
+;
+
+SENTENCIA_BC: tk_break{ $$=`break`;  }
+			| tk_continue { $$=`continue`; }
+			
 ;
 
 DECLARACION_CONTADOR:  mas mas { $$ = `++`; }
 					|  MENOS MENOS { $$ = `--`; }
 
 ;
-
-LISTA_VARIABLES: LISTA_VARIABLES coma identificador  {$$ =`${$1}${$2}${$3}`;}
-				| identificador {$$ = `${$1}`;}
-;
-
-
-PARAMETROS_METODO_FUNCION: TIPO_DATO EXP_NUMERICA L_PARAMETROS_METODO_FUNCION { $$=`${$2}${$3}${$4}`; }
-						| TIPO_DATO EXP_NUMERICA {$$=`${$2}`;}
-						| {$$=``;}; 
-
-L_PARAMETROS_METODO_FUNCION: L_PARAMETROS_METODO_FUNCION coma TIPO_DATO EXP_NUMERICA  {$$=`${$1}${$2}${$4}`; }
-						   | coma TIPO_DATO EXP_NUMERICA  {$$=`${$1}${$3}` ; } ;
-
-
-
-
-LLAMADA_METODO: identificador parentesis_izq LLAMADA_PARAMETRO parentesis_der punto_coma { `this.${$1}${$2}${$3}${$4}${$5}`;}
-		
- 
-;
-
-LLAMADA_PARAMETRO: EXP_NUMERICA LISTA_LLAMADA_PARAMETRO { $$ = `${$1}${$2}`;  }
-				 | EXP_NUMERICA {$$ = `${$1}`;}
-				 |{$$ = ``;};
-
-LISTA_LLAMADA_PARAMETRO: LISTA_LLAMADA_PARAMETRO coma EXP_NUMERICA  { $$ =`${$1}${$2}${$3}`;}
-				| coma EXP_NUMERICA {$$ = `,${$2}`;}								   }
-;
-
 
 EXP_LOGICA
 	: EXP_RELACIONAL op_and EXP_RELACIONAL     {$$ = `${$1}${$2}${$3}`; }
@@ -241,23 +296,4 @@ EXP_NUMERICA
 	| identificador				{ $$ =`${$1}`; }						
 ;
 
-
-
-TIPO_DATO: tk_int { $$ =``; }
-        | tk_double {  $$ =``; }
-        | tk_String {  $$ =``;  }
-        | tk_boolean { $$ =``;   }
-        | tk_char {  $$ =``;  }
-;
-
-
-SENTENCIA_RETURN: tk_return EXP_NUMERICA { $$=`return ${$2}`;}
-				| tk_return {$$ = `return`;}
-
-;
-
-
-SENTENCIA_BC: tk_break punto_coma { $$=`break;`;  }
-			| tk_continue punto_coma { $$=`continue;`; }
-			|{$$ = ``;};
 

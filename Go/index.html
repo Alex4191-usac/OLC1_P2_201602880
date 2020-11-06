@@ -56,9 +56,9 @@
         <div class="controls">
         
             <label>JS ERRORS</label>
-            <textarea class="errors_parse" rows="10"></textarea>
+            <textarea class="errors_parse" id="errors_jison" rows="10"></textarea>
             <label>PYTHON ERRORS</label>
-            <textarea class="errors_parse" rows="10"></textarea>
+            <textarea class="errors_parse" id="erroes_Python" rows="10"></textarea>
         </div>
            
              
@@ -79,7 +79,7 @@
                 </div>
                 <div class="modal-body">
                     <!--TABLE-->
-                    <table class="table">
+                    <table class="table table-responsive">
                         <thead class="thead-dark">
                           <tr>
                             <th scope="col">#</th>
@@ -87,6 +87,7 @@
                             <th scope="col">Tipo</th>
                             <th scope="col">Fila</th>
                             <th scope="col">Col</th>
+                            <th scope="col">Corr</th>
                           </tr>
                         </thead>
                         <tbody id="token_display">

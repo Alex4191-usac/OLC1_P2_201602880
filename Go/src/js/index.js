@@ -84,10 +84,12 @@ function showText(contenido) {
 
 function obtenerSaludo(){
 
-  removeAllChildNodes(document.querySelector('#token_display'));
-  var indice = document.getElementsByClassName("nav-link active tabBtn")
-  var TxtCSharp = document.getElementById("txtArea"+indice[0].id)
-  var curso = TxtCSharp.value;
+  //llamada a la funcion limpiar
+  clean_area();
+  
+  let indice = document.getElementsByClassName("nav-link active tabBtn")
+  let TxtCSharp = document.getElementById("txtArea"+indice[0].id)
+  let curso = TxtCSharp.value;
   ;
   
   fetch('../getInfo', {
@@ -110,15 +112,14 @@ function view(response){
   .renderDot('digraph  {'+response.Saludo+'}');
   
   TokenReport(response.Saludo2);
+  add_errorJison(response.ListaErrores);
 }
 
 function TokenReport(TokenObject){
   let obj_t = JSON.parse(TokenObject);
   let NewRow;
   let NewColumn;
-  console.log(obj_t.tokens[0].tipo);
-  console.log(obj_t.tokens[1].tipo);
-  console.log(obj_t.tokens[2].tipo);
+ 
   for (tk in obj_t.tokens) {
    
     NewRow=document.createElement("tr");
@@ -156,5 +157,30 @@ function removeAllChildNodes(parent) {
   while (parent.firstChild) {
       parent.removeChild(parent.firstChild);
   }
+}
+
+
+
+function add_errorJison(table_errors){
+  var txtCSharp = document.getElementById("errors_jison");
+  if(table_errors!= undefined){
+      txtCSharp.innerHTML = table_errors.toString();
+  }else{
+      txtCSharp.innerHTML = "NO SE ENCONTRARON ERRORES";
+  }
+}
+
+function clean_area(){
+  //remover listado de tokens JISON
+  removeAllChildNodes(document.querySelector('#token_display'));
+  
+  //remover data de los errores JISON
+  let txtJison = document.getElementById("errors_jison");
+  txtJison.innerHTML = "";
+
+  //remove data de los errores PYTHON
+
+  let txtPython = document.getElementById("erroes_Python");
+  txtPython.innerHTML = "";
 }
 

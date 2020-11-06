@@ -32,12 +32,13 @@ app.post('/Curso/', function (req, res) {
     let JsonGrammar = gramaticaJISON.parse(datos);
     let raiz = new recorrido_ARBOL();
     let string_ast =raiz.recorrer_arbol(JsonGrammar.ast);
+    
+
+    
 
     let body_table_report = String_table(JsonGrammar.lista_token);
     
-    res.send(JSON.stringify( {Saludo: string_ast, Saludo2:body_table_report} ));
-
-
+    res.send(JSON.stringify( {Saludo: string_ast, Saludo2:body_table_report,ListaErrores:JsonGrammar.lista_error} ));
 
 
 });
@@ -70,13 +71,6 @@ function String_table (TokenObject){
     }
     return body_table+`]}`;
 }
-
-/*<tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr> */
 
 
 app.listen(port,ip, async () => {
