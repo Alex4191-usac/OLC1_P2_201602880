@@ -22,8 +22,7 @@
             <div class="container">
                 <h1 class="display-4">Java To Javascript and Python</h1>
                 <p class="lead">Bryan Alvarado 201602880</p>
-                <p>Respuesta:</p>
-				<h4 id="saludo"></h4>
+                
             </div>
         </div>
         <div class="container-fluid">  
@@ -31,11 +30,20 @@
     <div id="analizador_area" class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
         <!--Editor de Texto-->
         <div class="controls">
-         
+            <div class="btn-group dropup">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  File
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Save</a>
+                    <a class="dropdown-item" href="#">Save As</a>
+                    <a class="dropdown-item" href="#" onclick="saveData()">Download JS</a>
+                </div>
+              </div>
             <button class="btn btn-danger" onclick="addTab()"><span class="oi oi-plus"></span> Add Tab</button>
             <button class="btn btn-success" onclick="obtenerSaludo()" ><span class="oi oi-play-circle"></span> Run</button>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-             ver Reporte Tokens  
+            Reporte Tokens  
             </button>
             <input class="btn btn-primary" type="file" id="fileinput" onchange="openArchive(event)" />
         </div>    

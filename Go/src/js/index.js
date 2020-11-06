@@ -2,7 +2,7 @@
 
 
 var tabIndex=2;
-
+let File_Js = "";
 function openEditorTab(evt, tabName) {
 
   var i, tabcontent, tabBtns;
@@ -113,6 +113,13 @@ function view(response){
   
   TokenReport(response.Saludo2);
   add_errorJison(response.ListaErrores);
+
+  File_Js = response.Traduccion_Jison;
+  console.log("ETES FECTCH");
+  console.log(File_Js);
+  console.log("niz");
+
+
 }
 
 function TokenReport(TokenObject){
@@ -170,7 +177,14 @@ function add_errorJison(table_errors){
   }
 }
 
+
+
+
 function clean_area(){
+  //cleans the actual String file
+  
+  File_Js = "";
+
   //remover listado de tokens JISON
   removeAllChildNodes(document.querySelector('#token_display'));
   
@@ -184,3 +198,21 @@ function clean_area(){
   txtPython.innerHTML = "";
 }
 
+
+function saveData() {
+
+  var saveData = (function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      return function () {
+          var blob = new File([File_Js], "Traduccion.js");
+          url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = blob.name;
+          a.click();
+          window.URL.revokeObjectURL(url);
+      };
+  }());
+  saveData();
+}

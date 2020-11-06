@@ -27,7 +27,7 @@ type curso struct {
 
 /*TEST FILES*/
 func getInfo(w http.ResponseWriter, r *http.Request) {
-	var url = nodeURL + "/Curso/"
+	var url = nodeURL + "/Traductor/"
 
 	fmt.Println("entro al get Info")
 	var decoder = json.NewDecoder(r.Body)
@@ -45,7 +45,7 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("error:", err)
 
 	}
-	//var jsonStr = []byte(`{"Nombre":"` + c.Nombre + `"}`)
+
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
 	req.Header.Set("Content-Type", "application/json")
 
@@ -92,12 +92,13 @@ func main() {
 		port = "8001"
 	}
 
+	/*CARGAR TODOS LOS RECURSOS JS CSS AL SERVER */
 	http.Handle("/src/", http.StripPrefix("/src/", http.FileServer(http.Dir("src/"))))
 
 	http.HandleFunc("/", index)
 	http.HandleFunc("/getInfo", getInfo)
 
-	fmt.Println("Escuchando por IP:" + ip + " PORT:" + port)
+	fmt.Println("IP:" + ip + " PORT:" + port)
 
 	http.ListenAndServe(":"+port, nil)
 }
