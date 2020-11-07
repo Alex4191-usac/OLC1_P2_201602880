@@ -34,10 +34,11 @@ app.post('/Traductor/', function (req, res) {
     console.log(datos.length);
     let JsonGrammar = gramaticaJISON.parse(datos);
     let raiz = new recorrido_ARBOL();
+    raiz.limpiar_cadena();
     let string_ast =raiz.recorrer_arbol(JsonGrammar.ast);
-
+    
     let Js_traduccion = traductor.parse(datos);
-    console.log(Js_traduccion);
+
 
     
 

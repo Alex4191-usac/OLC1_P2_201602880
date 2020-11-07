@@ -115,10 +115,7 @@ function view(response){
   add_errorJison(response.ListaErrores);
 
   File_Js = response.Traduccion_Jison;
-  console.log("ETES FECTCH");
-  console.log(File_Js);
-  console.log("niz");
-
+  
 
 }
 
@@ -170,8 +167,13 @@ function removeAllChildNodes(parent) {
 
 function add_errorJison(table_errors){
   var txtCSharp = document.getElementById("errors_jison");
+  let errores_aux="";
   if(table_errors!= undefined){
-      txtCSharp.innerHTML = table_errors.toString();
+
+      for (const iterator of table_errors) {
+        errores_aux+=iterator+"\n";
+      }
+      txtCSharp.innerHTML = errores_aux.toString();
   }else{
       txtCSharp.innerHTML = "NO SE ENCONTRARON ERRORES";
   }

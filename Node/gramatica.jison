@@ -187,12 +187,12 @@ TIPO_INSTRUCCION: tk_public tk_class identificador BLOQUESENTENCIAS_PADRE { $$ =
 																							  $$.AgregarHijo(new Nodo("class","tk_class"));
 																							  $$.AgregarHijo(new Nodo($3,"Id"));
 																							  $$.AgregarHijo($4);} 
-				| tk_public tk_interface identificador BLOQUESENTENCIAS_PADRE {$$ = new Nodo("TIPO_INSTRUCCION");
+				| tk_public tk_interface identificador BLOQUESENTENCIAS_PADRE_I {$$ = new Nodo("TIPO_INSTRUCCION");
 																			$$.AgregarHijo(new Nodo("public","tk_public"));
 																			$$.AgregarHijo(new Nodo("interface","tk_interface"));
 																			$$.AgregarHijo(new Nodo($3,"Id"));
 																			$$.AgregarHijo($4);}
-				| error llave_der {	Error_Array.push('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);  }
+				| error llave_der {	Error_Array.push('Este es un error Sintactico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' +this._$.first_column);  }
 
 ;
 
@@ -204,6 +204,52 @@ BLOQUESENTENCIAS_PADRE
 																	$$.AgregarHijo(new Nodo("}","llave_der")); }
 
 ;
+
+BLOQUESENTENCIAS_PADRE_I
+					: llave_izq LISTA_SUB_INSTRUCCION_I llave_der	{ $$ = new Nodo("BLOQUESENTENCIAS_PADRE_I");
+																	$$.AgregarHijo(new Nodo("{","llave_izq"));
+																	$$.AgregarHijo($2);
+																	$$.AgregarHijo(new Nodo("}","llave_der")); }
+
+;
+
+LISTA_SUB_INSTRUCCION_I:  SUB_INSTRUCCION_I LISTA_SUB_INSTRUCCION_I { $$ = new Nodo("LISTA_SUB_INSTRUCCION_I");
+																$$.AgregarHijo($1);
+																$$.AgregarHijo($2); }
+					| SUB_INSTRUCCION_I {$$ = new Nodo("LISTA_SUB_INSTRUCCION_I");
+									  $$.AgregarHijo($1); }
+
+
+;
+
+SUB_INSTRUCCION_I:  METODO_INTERFAZ punto_coma { $$ = new Nodo("SUB_INSTRUCCION_I");
+																$$.AgregarHijo($1);
+																$$.AgregarHijo($2); }
+;
+				
+
+METODO_INTERFAZ : tk_public tk_void identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der { $$ = new Nodo("METODO_INTERFAZ");
+																$$.AgregarHijo(new Nodo("public","tk_public"));
+																$$.AgregarHijo(new Nodo("void","tk_void"));
+																$$.AgregarHijo(new Nodo($3,"llave_izq"));
+																$$.AgregarHijo(new Nodo("(","parentesis_izq"));
+																$$.AgregarHijo($5);
+																$$.AgregarHijo(new Nodo(")","parentesis_der")); }
+				| tk_void identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der { $$ = new Nodo("METODO_INTERFAZ");
+																
+																$$.AgregarHijo(new Nodo("void","tk_void"));
+																$$.AgregarHijo(new Nodo($2,"llave_izq"));
+																$$.AgregarHijo(new Nodo("(","parentesis_izq"));
+																$$.AgregarHijo($5);
+																$$.AgregarHijo(new Nodo(")","parentesis_der")); }
+
+
+;
+
+
+
+
+
 
 
 
@@ -323,7 +369,7 @@ INSTRUCCION
 	| SENTENCIA_BC punto_coma  { $$ = new Nodo ("INSTRUCCION");
 								  $$.AgregarHijo($1);
 								  $$.AgregarHijo(new Nodo(";","punto_coma")); }
-	| error punto_coma  {Error_Array.push('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);  }
+	| error punto_coma  {Error_Array.push('Este es un error Sintactico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' +this._$.first_column);  }
 
 	
 	
