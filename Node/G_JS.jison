@@ -111,7 +111,7 @@ LISTA_TIPO_INSTRUCCION: TIPO_INSTRUCCION LISTA_TIPO_INSTRUCCION { $$ = `${$1}${$
 
 
 TIPO_INSTRUCCION: tk_public tk_class identificador BLOQUESENTENCIAS_PADRE { $$ = `${$2} ${$3} ${$4}`;} 
-				| tk_public tk_interface identificador BLOQUESENTENCIAS_PADRE_I {}
+				| tk_public tk_interface identificador BLOQUESENTENCIAS_PADRE {}
 				| cm_multiple {$$ =`${$1}\n`; }
 				| cm_simple {$$ =`${$1}\n`; }
 				| error llave_der {$$=``;}
@@ -121,39 +121,11 @@ BLOQUESENTENCIAS_PADRE
 					: llave_izq LISTA_SUB_INSTRUCCION llave_der	{ $$ = `{\n${$2}}`; }
 
 ;
-
-BLOQUESENTENCIAS_PADRE_I
-					: llave_izq LISTA_SUB_INSTRUCCION_I llave_der	{ }
-
-;
-
-
-
 LISTA_SUB_INSTRUCCION:  SUB_INSTRUCCION LISTA_SUB_INSTRUCCION { $$ = `${$1}${$2}`; }
 					| SUB_INSTRUCCION { $$ = `${$1}`; }
 
 
 ;
-
-LISTA_SUB_INSTRUCCION_I:  SUB_INSTRUCCION_I LISTA_SUB_INSTRUCCION_I {  }
-					| SUB_INSTRUCCION_I {}
-
-
-;
-
-SUB_INSTRUCCION_I:  METODO_INTERFAZ punto_coma { }
-;
-				
-
-METODO_INTERFAZ : tk_public tk_void identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der { }
-				| tk_void identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der { }
-				
-
-
-;
-
-
-
 
 SUB_INSTRUCCION: tk_public tk_void identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der BLOQUESENTENCIAS_HIJO {$$=`\t ${$3}${$4}${$5}${$6}${$7}`;}
 				| tk_public TYPE identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der BLOQUESENTENCIAS_HIJO {$$=`\t function ${$3}${$4}${$5}${$6}${$7}`;}

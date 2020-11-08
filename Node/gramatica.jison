@@ -515,18 +515,37 @@ DEFWHILE
 ;
 
 DEFFOR : 
-	tk_for parentesis_izq DEFDECLARACION punto_coma EXP_LOGICA punto_coma DECLARACION_CONTADOR parentesis_der BLOQUESENTENCIAS { $$ = new Nodo("DEFFOR","");
+	tk_for parentesis_izq DEFDECLARA_FOR  EXP_RELACIONAL punto_coma identificador DECLARACION_CONTADOR parentesis_der BLOQUESENTENCIAS { $$ = new Nodo("DEFFOR","");
 																															$$.AgregarHijo(new Nodo("for","tk_for"));
 																															$$.AgregarHijo(new Nodo("(","par_izq"));
 																															$$.AgregarHijo($3);
 																															
-																															$$.AgregarHijo(new Nodo(";","punto_coma"));
-																															$$.AgregarHijo($5);
-																															$$.AgregarHijo(new Nodo(";","punto_coma"));
 																															
+																															$$.AgregarHijo($4);
+																															$$.AgregarHijo(new Nodo(";","punto_coma"));
+																															$$.AgregarHijo(new Nodo($6,"identificador"));
 																															$$.AgregarHijo($7);
 																															$$.AgregarHijo(new Nodo(")","par_der"));
 																															$$.AgregarHijo($9); }
+
+;
+
+DEFDECLARA_FOR: 
+				TYPE identificador igual EXP_NUMERICA punto_coma {$$ = new Nodo("DECLARA_FOR","");
+																$$.AgregarHijo($1);
+																$$.AgregarHijo(new Nodo($2,"identificador"));
+																$$.AgregarHijo(new Nodo("=","igual"));
+																$$.AgregarHijo($4);
+																$$.AgregarHijo(new Nodo(";","punto_coma"));}
+				| identificador igual EXP_NUMERICA punto_coma {$$ = new Nodo("DECLARA_FOR","");
+																
+																$$.AgregarHijo(new Nodo($1,"identificador"));
+																$$.AgregarHijo(new Nodo("=","igual"));
+																$$.AgregarHijo($3);
+																$$.AgregarHijo(new Nodo(";","punto_coma"));}
+				| identificador punto_coma  {$$ = new Nodo("DECLARA_FOR","");
+											$$.AgregarHijo(new Nodo($1,"identificador"));
+											$$.AgregarHijo(new Nodo(";","punto_coma"));}
 
 ;
 

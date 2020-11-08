@@ -3,12 +3,18 @@ public % class nombre{
 public void AsignarNombre(int x, int y, String Hola){
  
  System.out.println("jp");
+  
+    for(int x=0;x<100;x++){
+             System.out.println("jp");
+        }
+
+
 }
 }
 
 public interface nombre{
 
-  void nombre (int x , int y , int z);
+  void nombre (int x , int y , int z)
   public void apellido (string nombre, int x, char x);
 }
 
