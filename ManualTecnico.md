@@ -183,7 +183,11 @@ EXP_NUMERICA
 
 
 ```
+### EXPRESION REGULAR PARA ANALIZADOR PYTHON
+![pantalla principal](./images/7.png)
 
+### AUTOMATA RESULTANTE DE EXPRESION REGULAR
+![pantalla principal](./images/9.png)
 
 # Detalle de clases
 
