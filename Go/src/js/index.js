@@ -109,7 +109,7 @@ function obtenerSaludo(){
   let indice = document.getElementsByClassName("nav-link active tabBtn")
   let TxtCSharp = document.getElementById("txtArea"+indice[0].id)
   let curso = TxtCSharp.value;
-  
+  llamar();
   
   fetch('../getInfo', {
       method: 'POST',
