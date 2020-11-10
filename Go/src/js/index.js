@@ -80,17 +80,36 @@ function showText(contenido) {
   txtCSharp.innerHTML = contenido;
 }
 
+function llamar(){
+  let indices = document.getElementsByClassName("nav-link active tabBtn");
+  let txts = document.getElementById("txtArea"+indices[0].id);
+  let javaFile = txts.value;
+
+  
+  fetch('../getDataInfo', {
+    method: 'POST',
+    body: JSON.stringify({"Nombre":javaFile}),
+    headers:{
+      'Content-Type': 'application/json'
+    }
+    
+}
+).then(res => res.json())
+.catch(error => console.error('Error:', error))
+.then(response => console.log(response));
+
+}
 
 
 function obtenerSaludo(){
-
+   
   //llamada a la funcion limpiar
   clean_area();
   
   let indice = document.getElementsByClassName("nav-link active tabBtn")
   let TxtCSharp = document.getElementById("txtArea"+indice[0].id)
   let curso = TxtCSharp.value;
-  ;
+  
   
   fetch('../getInfo', {
       method: 'POST',
@@ -103,8 +122,15 @@ function obtenerSaludo(){
   ).then(res => res.json())
   .catch(error => console.error('Error:', error))
   .then(response => view(response));
+
+
+ 
   
 }
+
+
+
+
 
 function view(response){
  
@@ -153,6 +179,8 @@ function TokenReport(TokenObject){
     NewRow.appendChild(NewColumn);
     
     document.getElementById("token_display").appendChild(NewRow);
+    document.getElementById("token_display_Python").appendChild(NewRow);
+    
   }
   
 }
@@ -189,6 +217,9 @@ function clean_area(){
 
   //remover listado de tokens JISON
   removeAllChildNodes(document.querySelector('#token_display'));
+  removeAllChildNodes(document.querySelector('#token_display_Python'));
+
+
   
   //remover data de los errores JISON
   let txtJison = document.getElementById("errors_jison");

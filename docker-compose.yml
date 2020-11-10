@@ -10,6 +10,8 @@ services:
       - GOLANG_PORT=8001
       - NODEJS_IP=182.18.7.7
       - NODEJS_PORT=3001
+      - JS_IP=182.18.7.8
+      - JS_PORT=3002
     volumes:
       - ./Go:/App/
     networks:
@@ -17,6 +19,7 @@ services:
             ipv4_address: 182.18.7.9
     depends_on:
       - backend
+      - backend2
   backend:
     container_name: nodeserver
     image: nodeweb:v1
@@ -31,6 +34,20 @@ services:
     networks:
       testing_net:
             ipv4_address: 182.18.7.7
+  backend2:
+    container_name: jsServicio
+    image: jsweb:v1
+    ports:
+      - "3002:3002"
+    environment:
+      - JS_IP=182.18.7.8
+      - JS_PORT=3002
+    volumes:
+      - ./Cliente:/App/
+      - /App/node_modules
+    networks:
+      testing_net:
+            ipv4_address: 182.18.7.8
 
 networks:
     testing_net:

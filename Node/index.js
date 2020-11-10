@@ -31,18 +31,18 @@ app.use(express.json());
 
 app.post('/Traductor/', function (req, res) {
     var datos = req.body.Nombre.toString();
-    console.log(datos.length);
-    let JsonGrammar = gramaticaJISON.parse(datos);
     let raiz = new recorrido_ARBOL();
     raiz.limpiar_cadena();
+    
+    
+    
+    
+    let JsonGrammar = gramaticaJISON.parse(datos);
     let string_ast =raiz.recorrer_arbol(JsonGrammar.ast);
-    
     let Js_traduccion = traductor.parse(datos);
-
-
-    
-
+    //console.log(Js_traduccion);
     let body_table_report = String_table(JsonGrammar.lista_token);
+
     
     res.send(JSON.stringify( {Saludo: string_ast, Saludo2:body_table_report,ListaErrores:JsonGrammar.lista_error,Traduccion_Jison:Js_traduccion} ));
 

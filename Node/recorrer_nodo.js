@@ -15,7 +15,7 @@ class Recorrer_nodo{
             id_n++;
         }
         
-            concatena+=nodo.id + ' [label= "'+ nodo.valor +'" fillcolor="#d62728" shape="circle"];\n';
+            concatena+=nodo.id + ' [label= "'+ nodo.valor +'" fillcolor="#d62728" shape="ellipse"];\n';
         
         
         if(nodo.hijos!=undefined){

@@ -36,6 +36,7 @@
 "if"                %{return 'tk_if';%}
 "else"              %{return 'tk_else';%}
 
+
 /*------------------------------------------------------------------------------------------*/
 ";"                 %{return 'punto_coma'; %}
 "("                 %{return 'parentesis_izq'; %}
@@ -52,6 +53,8 @@
 "||"                %{return 'op_or';%}
 "!="                %{return 'op_not_igual';%}
 "=="                %{return 'op_igual_igual';%}
+"++"				%{return 'mas_mas';%}
+"--"				%{return 'menos_menos';%}
 "+"					%{return 'mas';%}
 "-"					%{return 'MENOS';%}
 "*"					%{return 'por';%}
@@ -61,6 +64,7 @@
 "<"                 %{return 'menor';%}
 "="                 %{return 'igual'; %}
 "!"                 %{return 'op_not';%}
+
 /* --------------------------especiales--------------------------------------*/
 
 [ \r\t\f]+            %{ /*ignore */%}
@@ -89,39 +93,80 @@
 
 /* Asociación de operadores y precedencia */
 
+%left 'op_or'
+%left 'op_and'
+%left 'op_igual_igual' 'op_not_igual'
+%left 'mayor' 'menor' 'op_menor_igual' 'op_mayorigual'
+%left 'mas_mas' 'menos_menos'
 %left 'mas' 'MENOS'
 %left 'por' 'dividido'
 %left 'op_xor'
-%right 'UMENOS'
+%right 'UMENOS' 'Uop_not'
+
 
 %start INICIO
 
 %%
-
 INICIO
 	: LISTA_TIPO_INSTRUCCION EOF {
+	
 		// cuando se haya reconocido la entrada completa retornamos la entrada traducida
 		return $1;
 	}
+	
 ;
 
-LISTA_TIPO_INSTRUCCION: TIPO_INSTRUCCION LISTA_TIPO_INSTRUCCION { $$ = `${$1}${$2}`; }
-					| TIPO_INSTRUCCION  { $$ = `${$1}`; }
+LISTA_TIPO_INSTRUCCION: LISTA_TIPO_INSTRUCCION TIPO_INSTRUCCION{ $$ = `${$1}\n${$2}`; }
+					| TIPO_INSTRUCCION  { $$ = `\n${$1}`; }
+					
 ;
-
 
 TIPO_INSTRUCCION: tk_public tk_class identificador BLOQUESENTENCIAS_PADRE { $$ = `${$2} ${$3} ${$4}`;} 
-				| tk_public tk_interface identificador BLOQUESENTENCIAS_PADRE {}
+				| tk_public tk_interface identificador BLOQUESENTENCIAS_PADRE_I { $$ = ``;}
 				| cm_multiple {$$ =`${$1}\n`; }
 				| cm_simple {$$ =`${$1}\n`; }
-				| error llave_der {$$=``;}
+				| error llave_der {$$ = ``;}
+				
+				 
 ;
+
 
 BLOQUESENTENCIAS_PADRE
-					: llave_izq LISTA_SUB_INSTRUCCION llave_der	{ $$ = `{\n${$2}}`; }
+					: llave_izq LISTA_SUB_INSTRUCCION llave_der	{ $$ = `{\n${$2}\n}`; }
 
 ;
-LISTA_SUB_INSTRUCCION:  SUB_INSTRUCCION LISTA_SUB_INSTRUCCION { $$ = `${$1}${$2}`; }
+
+
+BLOQUESENTENCIAS_PADRE_I
+					: llave_izq LISTA_SUB_INSTRUCCION_I llave_der	{ $$ = ``; }
+
+;
+
+
+LISTA_SUB_INSTRUCCION_I: LISTA_SUB_INSTRUCCION_I SUB_INSTRUCCION_I { $$ = ``; }
+					| SUB_INSTRUCCION_I { $$ = ``; }
+
+
+;
+
+SUB_INSTRUCCION_I:  METODO_INTERFAZ punto_coma { $$ = ``; }
+					| error punto_coma  {$$ = ``;}
+					
+					
+;
+
+METODO_INTERFAZ : tk_public tk_void identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der {$$ = ``;  }
+				| tk_void identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der {$$ = ``; }
+				| tk_public TYPE identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der {$$ = ``;}
+				| TYPE identificador  parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der {$$ = ``;}
+				
+
+;
+
+
+
+
+LISTA_SUB_INSTRUCCION: LISTA_SUB_INSTRUCCION SUB_INSTRUCCION { $$ = `${$1}${$2}`; }
 					| SUB_INSTRUCCION { $$ = `${$1}`; }
 
 
@@ -130,111 +175,149 @@ LISTA_SUB_INSTRUCCION:  SUB_INSTRUCCION LISTA_SUB_INSTRUCCION { $$ = `${$1}${$2}
 SUB_INSTRUCCION: tk_public tk_void identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der BLOQUESENTENCIAS_HIJO {$$=`\t ${$3}${$4}${$5}${$6}${$7}`;}
 				| tk_public TYPE identificador parentesis_izq PARAMETROS_METODO_FUNCION parentesis_der BLOQUESENTENCIAS_HIJO {$$=`\t function ${$3}${$4}${$5}${$6}${$7}`;}
 				| tk_public tk_static tk_void tk_main parentesis_izq tk_String corchete_izq corchete_der tk_args parentesis_der BLOQUESENTENCIAS_HIJO {$$=`\t Main ${$5}${$10}${$11}`;}
-				| DEFDECLARACION punto_coma {$$ =`${$1};`; }
+				| DEFDECLARACION punto_coma {$$ =`\t${$1}${$2}\n`; }
+				| DEFASIGNACION punto_coma { $$ = `\t${$1}${$2}\n`; }
+				| LLAMADA_METODO punto_coma { $$ = `\t${$1}${$2}\n`; }
 				| cm_multiple {$$ =`${$1}\n`; }
 				| cm_simple {$$ =`${$1}\n`; }
+				| error llave_der {$$ = ``;}
+				
 ;
 
-BLOQUESENTENCIAS_HIJO 
-				: llave_izq INSTRUCCIONES llave_der	{ $$ = `{\n${$2}}`; }
-;
-
-PARAMETROS_METODO_FUNCION: TYPE EXP_NUMERICA L_PARAMETROS_METODO_FUNCION { $$=`${$2}${$3}`; }
-						| TYPE EXP_NUMERICA {$$=`${$2}`;}
+PARAMETROS_METODO_FUNCION: TYPE EXPRESION L_PARAMETROS_METODO_FUNCION { $$=`${$2}${$3}`; }
+						| TYPE EXPRESION {$$=`${$2}`;}
 						| {$$=``;}
 ; 
 
-L_PARAMETROS_METODO_FUNCION: L_PARAMETROS_METODO_FUNCION coma TYPE EXP_NUMERICA  {$$=`${$1}${$2}${$4}`; }
-						   | coma TYPE EXP_NUMERICA  {$$=`${$1}${$3}` ; } 
+L_PARAMETROS_METODO_FUNCION: L_PARAMETROS_METODO_FUNCION coma TYPE EXPRESION  {$$=`${$1}${$2}${$4}`; }
+						   | coma TYPE EXPRESION  {$$=`${$1}${$3}` ; } 
 						   
 ;
 
 
+
+
+
+BLOQUESENTENCIAS_HIJO 
+				: llave_izq INSTRUCCIONES llave_der	{ $$ = `{\n${$2}\t}\n`; }
+;
+
+
 INSTRUCCIONES
-	:  INSTRUCCION INSTRUCCIONES	{ $$ = `${$1}${$2}`; }
+	: INSTRUCCIONES INSTRUCCION 	{ $$ = `${$1}${$2}`; }
 	| INSTRUCCION					{ $$ = `${$1}`; }
 ;
 
 INSTRUCCION
-	: DEFDECLARACION punto_coma		{ $$ = `${$1}${$2}\n`; }
-	| LLAMADA_METODO punto_coma     { $$ = `${$1};\n`; }
-    | DEFIF						{ $$ = `${$1}\n`; }
-    | DEFWHILE					{ $$ = `${$1}\n`; }
-	| DEFFOR					{ $$ = `${$1}\n`; }
-	| DEFDO tk_while parentesis_izq EXP_LOGICA parentesis_der punto_coma {$$ = `${$1}\n${$2}${$3}${$4}${$5};\n`;}
-    | DEFPRINT punto_coma 			{ $$ = `${$1};\n`; }
-	| SENTENCIA_RETURN punto_coma { $$ = `${$1};\n`; }
-	| SENTENCIA_BC punto_coma  { $$ = `${$1};\n`; }
+	: DEFDECLARACION punto_coma		{ $$ = `\t\t${$1}${$2}\n`; }
+	| DEFASIGNACION punto_coma { $$ = `\t\t${$1}${$2}\n`; }
+	| LLAMADA_METODO punto_coma     { $$ = `\t\t${$1};\n`; }
+    | DEFIF						{ $$ = `\t\t${$1}\n`; }
+    | DEFWHILE					{ $$ = `\t\t${$1}\n`; }
+	| DEFFOR					{ $$ = `\t\t${$1}\n`; }
+	| DEFDO tk_while parentesis_izq EXPRESION parentesis_der punto_coma {$$ = `\t\t${$1}${$2}${$3}${$4}${$5};\n`;}
+    | DEFPRINT punto_coma 			{ $$ = `\t\t${$1};\n`; }
+	| SENTENCIA_RETURN punto_coma { $$ = `\t\t${$1};\n`; }
+	| SENTENCIA_BC punto_coma  { $$ = `\t\t${$1};\n`; }
 	| cm_multiple {$$ =`${$1}\n`; }
 	| cm_simple {$$ =`${$1}\n`; }
-	| error punto_coma  {$$=``;}
-	
+	| error punto_coma  {$$ = ``;}
 	
 ;
 
-BLOQUESENTENCIAS
-    : llave_izq INSTRUCCIONES llave_der	{ $$ = `{${$2}\n}`; }
+
+DEFDECLARACION:   TYPE LISTA_VARIABLES  {$$ = `var ${$2}`;}
+				 			
 ;
 
-DEFDECLARACION:   TYPE LISTA_VARIABLES  {$$ = `\t var ${$2}`;}
-				| TYPE LISTA_VARIABLES igual EXP_NUMERICA  { $$ =`\t var ${$2}${$3}${$4}`;}
-				| LISTA_VARIABLES igual EXP_NUMERICA  {$$ = `\t ${$1}${$2}${$3}`;}
-				| identificador mas mas  { $$=`\t ${$1}${$2}${$3}`;}
-				| identificador MENOS MENOS  { $$=`\t ${$1}${$2}${$3}`;}
+DEFASIGNACION:   identificador igual EXPRESION { $$ = `${$1}${$2}${$3}`; }
+				 | EXPRESION {$$=`${$1}`;}
 				
+
 ;
 
-LISTA_VARIABLES:  coma identificador LISTA_VARIABLES  {$$ =`${$1}${$2}${$3}`;}
-				| identificador {$$ = `${$1}`;}
-    }
+LISTA_VARIABLES:  LISTA_VARIABLES coma identificador   {$$ =`${$1}${$2}${$3}`;}
+				| LISTA_VARIABLES coma identificador igual EXPRESION {$$ = `${$1}${$2}${$3}${$4}${$5}`;}
+				| identificador igual EXPRESION {$$ =`${$1}${$2}${$3}`;}
+				| identificador {$$ =`${$1}`;}
+	
   		
 ;
-
-
-
 LLAMADA_METODO
 		: identificador parentesis_izq LLAMADA_PARAMETRO parentesis_der  {$$= `${$1}${$2}${$3}${$4}`;}
 		
 ;
 
-LLAMADA_PARAMETRO: EXP_NUMERICA LISTA_LLAMADA_PARAMETRO { $$ = `${$1}${$2}`;  }
-				 | EXP_NUMERICA {$$ = `${$1}`;}
+LLAMADA_PARAMETRO: EXPRESION LISTA_LLAMADA_PARAMETRO { $$ = `${$1}${$2}`;  }
+				 | EXPRESION {$$ = `${$1}`;}
 				 |{$$ = ``;}
 ;
 
-LISTA_LLAMADA_PARAMETRO:  coma EXP_NUMERICA LISTA_LLAMADA_PARAMETRO { $$ =`${$1}${$2}${$3}`;}
-				| coma EXP_NUMERICA {$$ = `,${$2}`;}								  
+LISTA_LLAMADA_PARAMETRO: LISTA_LLAMADA_PARAMETRO coma EXPRESION  { $$ =`${$1}${$2}${$3}`;}
+				| coma EXPRESION {$$ = `,${$2}`;}								  
 ;
 
-
-
 DEFIF
-    : tk_if parentesis_izq EXP_LOGICA parentesis_der BLOQUESENTENCIAS							{ $$ = `${$1}${$2}${$3}${$4}${$5}`; }
-    | tk_if parentesis_izq EXP_LOGICA parentesis_der BLOQUESENTENCIAS tk_else BLOQUESENTENCIAS	{ $$ = `${$1}${$2}${$3}${$4}${$5}${$6}${$7}`; }
-    | tk_if parentesis_izq EXP_LOGICA parentesis_der BLOQUESENTENCIAS tk_else DEFIF				{ $$ = `${$1}${$2}${$3}${$4}${$5}${$6}${$7}`; }
+    : tk_if parentesis_izq EXPRESION parentesis_der BLOQUESENTENCIAS							{ $$ = `${$1}${$2}${$3}${$4}${$5}`; }
+    | tk_if parentesis_izq EXPRESION parentesis_der BLOQUESENTENCIAS tk_else BLOQUESENTENCIAS	{ $$ = `${$1}${$2}${$3}${$4}${$5}${$6}${$7}`; }
+    | tk_if parentesis_izq EXPRESION parentesis_der BLOQUESENTENCIAS tk_else DEFIF				{ $$ = `${$1}${$2}${$3}${$4}${$5}${$6}${$7}`; }
 ;
 
 DEFPRINT
-    : tk_System punto tk_out punto tk_println parentesis_izq EXP_NUMERICA parentesis_der {$$ = `\t console.log(${$7})\n`;}
-	| tk_System punto tk_out punto tk_print parentesis_izq EXP_NUMERICA parentesis_der{$$ = `\t console.log(${$7})\n`;}
+    : tk_System punto tk_out punto tk_println parentesis_izq EXPRESION parentesis_der {$$ = `console.log(${$7})`;}
+	| tk_System punto tk_out punto tk_print parentesis_izq EXPRESION parentesis_der{$$ = `console.log(${$7})`;}
 ;
 
 DEFWHILE
     
-    : tk_while parentesis_izq EXP_LOGICA parentesis_der BLOQUESENTENCIAS { $$ = `while ( ${$3} ) \n${$5}`; }
+    : tk_while parentesis_izq EXPRESION parentesis_der BLOQUESENTENCIAS { $$ = `while ( ${$3} ) \n${$5}`; }
     
 ;
 
 DEFFOR
 
-	: tk_for parentesis_izq DEFDECLARACION punto_coma EXP_LOGICA punto_coma DECLARACION_CONTADOR parentesis_der BLOQUESENTENCIAS { $$ = `for ( ${$3};${$5};${$7} ) `; }
+	: tk_for parentesis_izq DEFDECLARACION punto_coma EXPRESION punto_coma  DEFASIGNACION parentesis_der BLOQUESENTENCIAS { $$ = `for ( ${$3};${$5};${$7} )${$9} `; }
 
 ;
 
 DEFDO 
 
-	: tk_do BLOQUESENTENCIAS { $$ = `do`; }
+	: tk_do BLOQUESENTENCIAS { $$ = `do${$2}`; }
 ;
+
+
+BLOQUESENTENCIAS
+    : llave_izq INSTRUCCIONES llave_der	{ $$ = `{\n${$2}\t\t}`; }
+;
+
+
+
+EXPRESION
+	: EXPRESION mas EXPRESION               { $$ = `${$1} + ${$3}`; }
+    | EXPRESION MENOS EXPRESION             { $$ = `${$1} - ${$3}`; }
+    | EXPRESION por EXPRESION               { $$ = `${$1} * ${$3}`; }
+    | EXPRESION dividido EXPRESION               { $$ = `${$1} / ${$3}`; }
+	| EXPRESION op_xor EXPRESION               { $$ = `${$1} ^ ${$3}`; }
+    | MENOS EXPRESION %prec UMENOS	        { $$ = `- ${$2}`; }
+    | entero                                { $$ = `${$1}`; }
+    | decimal                               { $$ = `${$1}`; }
+    | Caracter                              { $$ = `${$1}`; }
+    | CADENA                                { $$ = `${$1}`; }
+    | identificador                         { $$ = $1 }
+    | EXPRESION op_igual_igual EXPRESION        { $$ = `${$1} == ${$3}`; }
+    | EXPRESION op_not_igual EXPRESION         { $$ = `${$1} != ${$3}`; }
+    | EXPRESION menor EXPRESION          { $$ = `${$1} < ${$3}`; }
+    | EXPRESION mayor EXPRESION          { $$ = `${$1} > ${$3}`; }
+    | EXPRESION op_menor_igual EXPRESION       { $$ = `${$1} <= ${$3}`; }
+    | EXPRESION op_mayorigual EXPRESION       { $$ = `${$1} >= ${$3}`; }
+    | EXPRESION op_and EXPRESION               { $$ = `${$1} && ${$3}`; }
+    | EXPRESION op_or EXPRESION                { $$ = `${$1} || ${$3}`; }
+	| EXPRESION mas_mas                     {$$ = `${$1}++`; }
+    | EXPRESION menos_menos                 {$$ = `${$1}--`; }
+    | op_not EXPRESION %prec Uop_not        { $$ = `! ${$2}`; }
+    | parentesis_izq EXPRESION parentesis_der{ $$ = `( ${$2} )`; }
+;
+
 
 
 
@@ -246,7 +329,7 @@ TYPE:
         | tk_char {  $$ =``;  }
 ;
 
-SENTENCIA_RETURN: tk_return EXP_NUMERICA { $$=`return ${$2}`;}
+SENTENCIA_RETURN: tk_return EXPRESION { $$=`return ${$2}`;}
 				| tk_return {$$ = `return`;}
 
 ;
@@ -256,44 +339,15 @@ SENTENCIA_BC: tk_break{ $$=`break`;  }
 			
 ;
 
-DECLARACION_CONTADOR:  mas mas { $$ = `++`; }
-					|  MENOS MENOS { $$ = `--`; }
 
-;
 
-EXP_LOGICA
-	: EXP_RELACIONAL op_and EXP_RELACIONAL     {$$ = `${$1}${$2}${$3}`; }
-	| EXP_RELACIONAL op_or EXP_RELACIONAL 		{$$ = `${$1}${$2}${$3}`;  }
-	| op_not EXP_RELACIONAL						{$$ = `${$1}${$2}`; }	
-	| EXP_RELACIONAL							{ $$ = `${$1}`; }	
-;
 
-EXP_RELACIONAL
-	: EXP_NUMERICA mayor EXP_NUMERICA		{ $$ = `${$1}${$2}${$3}`; }
-	| EXP_NUMERICA menor EXP_NUMERICA		{ $$ = `${$1}${$2}${$3}`; }
-	| EXP_NUMERICA op_mayorigual EXP_NUMERICA { $$ = `${$1}${$2}${$3}`;  }
-	| EXP_NUMERICA op_menor_igual EXP_NUMERICA	{ $$ = `${$1}${$2}${$3}`; }
-	| EXP_NUMERICA op_igual_igual EXP_NUMERICA			{ $$ = `${$1}${$2}${$3}`;  }
-	| EXP_NUMERICA op_not_igual EXP_NUMERICA			{ $$ = `${$1}${$2}${$3}`; }
-	| EXP_NUMERICA {$$ = `${$1}`;}
-;
 
-EXP_NUMERICA
-	
-	: EXP_NUMERICA mas EXP_NUMERICA		{ $$=`${$1}+${$3}`;}	
-	| EXP_NUMERICA MENOS EXP_NUMERICA		{  $$ =`${$1}-${$3}`; }
-	| EXP_NUMERICA por EXP_NUMERICA			{  $$ = `${$1}*${$3}`; }
 
-	| EXP_NUMERICA dividido EXP_NUMERICA	{  $$ =`${$1}/${$3}`; }
-	| MENOS EXP_NUMERICA %prec UMENOS { $$ = `-${$2}`;}	
-			
-	| EXP_NUMERICA op_xor EXP_NUMERICA	{$$ =`${$1} ${$2} ${$3}`;}
-	| parentesis_izq EXP_NUMERICA parentesis_der { $$ =`${$1} ${$2} ${$3}`;}					
-	| entero					{  $$ =`${$1}`; }						
-	| decimal					{ $$ =`${$1}`;}
-	| CADENA					{ $$ =`${$1}`;}
-	| Caracter					{ $$ =`${$1}`;}	
-	| identificador				{ $$ =`${$1}`; }						
-;
+
+
+
+
+
 
 

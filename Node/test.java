@@ -25,7 +25,7 @@ int x,y,z = 10;
 public int valor(){
 
  system.out.println("hola");
-   return x;
+   int variable = !((a < 10) == (10 > 10)) && ((a <= 10) != (10 >= 10)) || (4 + 4 - 4 * 4 / 6) ^ (Hola) || (Hola) - -(-7));
 }
 
 

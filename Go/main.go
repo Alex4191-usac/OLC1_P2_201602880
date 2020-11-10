@@ -25,11 +25,50 @@ type curso struct {
 	Nombre string
 }
 
+type javaFile struct {
+	Textot string
+}
+
 /*TEST FILES*/
+func getDataInfo(w http.ResponseWriter, r *http.Request) {
+	var url = jsURL + "/Traductor2/"
+
+	var decoder = json.NewDecoder(r.Body)
+	var c javaFile
+	err := decoder.Decode(&c)
+
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("entro la peticion a go")
+	b, err := json.Marshal(c)
+
+	if err != nil {
+
+		fmt.Println("error:", err)
+
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer resp.Body.Close()
+	bodyBytes, _ := ioutil.ReadAll(resp.Body)
+
+	fmt.Fprintf(w, string(bodyBytes))
+}
+
 func getInfo(w http.ResponseWriter, r *http.Request) {
 	var url = nodeURL + "/Traductor/"
 
-	fmt.Println("entro al get Info")
+	fmt.Println("entro peticion a go")
 	var decoder = json.NewDecoder(r.Body)
 	var c curso
 	err := decoder.Decode(&c)
@@ -37,7 +76,7 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("entro al get Info x3")
+
 	b, err := json.Marshal(c)
 
 	if err != nil {
@@ -61,11 +100,13 @@ func getInfo(w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Println(string(bodyBytes))
 	fmt.Fprintf(w, string(bodyBytes))
+
 }
 
 /*TEST FILES*/
 
 var nodeURL = ""
+var jsURL = ""
 
 func main() {
 	nodeip, defip := os.LookupEnv("NODEJS_IP")
@@ -81,6 +122,21 @@ func main() {
 
 	nodeURL = "http://" + nodeip + ":" + nodeport
 
+	/*js server*/
+	jsip, defip := os.LookupEnv("JS_IP")
+	jsport, defport := os.LookupEnv("JS_PORT")
+
+	if !defip {
+		jsip = "182.18.7.8"
+	}
+
+	if !defport {
+		jsport = "3002"
+	}
+
+	jsURL = "http://" + jsip + ":" + jsport
+
+	/*GO SERVER*/
 	ip, defip := os.LookupEnv("GOLANG_IP")
 	port, defport := os.LookupEnv("GOLANG_PORT")
 
@@ -97,6 +153,7 @@ func main() {
 
 	http.HandleFunc("/", index)
 	http.HandleFunc("/getInfo", getInfo)
+	http.HandleFunc("/getDataInfo", getDataInfo)
 
 	fmt.Println("IP:" + ip + " PORT:" + port)
 
